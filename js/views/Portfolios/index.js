@@ -7,7 +7,7 @@ import {
 import styles from './styles';
 import Icon from '../../components/Icon';
 
-const IconsGrid = () => {
+const Portfolios = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>
@@ -18,4 +18,4 @@ const IconsGrid = () => {
   );
 };
 
-export default IconsGrid;
+export default Portfolios;

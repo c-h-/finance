@@ -3,10 +3,10 @@ import React, {
 } from 'react';
 
 import Icon from './Icon';
-import Home from '../views/Home';
-import IconsGrid from '../views/IconsGrid';
+import Performance from '../views/Performance';
+import Portfolios from '../views/Portfolios';
 import NotFound from '../views/NotFound';
-import Translation from '../views/Translation';
+import Settings from '../views/Settings';
 
 export const notFoundKey = 'NotFound';
 
@@ -32,36 +32,36 @@ const getIcon = (name) => {
  * The routes for the App
  */
 export const AppRoutes = {
-  Home: {
-    screen: Home,
-    path: 'home',
+  Performance: {
+    screen: Performance,
+    path: 'performance',
     navigationOptions: {
-      title: 'Welcome',
+      title: 'Performance',
       tabBar: {
-        label: 'Welcome',
-        icon: getIcon('home'),
+        label: 'Performance',
+        icon: getIcon('timeline'),
       },
     },
   },
-  IconsGrid: {
-    screen: IconsGrid,
-    path: 'icons',
+  Portfolios: {
+    screen: Portfolios,
+    path: 'portfolios',
     navigationOptions: {
-      title: 'Icons',
+      title: 'Portfolios',
       tabBar: {
-        label: 'Icons',
-        icon: getIcon('view-module'),
+        label: 'Portfolios',
+        icon: getIcon('reorder'),
       },
     },
   },
-  Translation: {
-    screen: Translation,
-    path: 'translation',
+  Settings: {
+    screen: Settings,
+    path: 'settings',
     navigationOptions: {
-      title: 'Translation',
+      title: 'Settings',
       tabBar: {
-        label: 'Translation',
-        icon: getIcon('translate'),
+        label: 'Settings',
+        icon: getIcon('settings'),
       },
     },
   },

@@ -7,9 +7,8 @@ import {
 } from 'react-native';
 
 import styles from './styles';
-import Random from './components/Random';
 
-const Home = () => {
+const Performance = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.welcome}>
@@ -18,13 +17,12 @@ const Home = () => {
       <Text style={styles.instructions}>
         To get started, edit index.*.js
       </Text>
-      <Random />
     </View>
   );
 };
 
-Home.contextTypes = {
+Performance.contextTypes = {
   store: PropTypes.object,
 };
 
-export default Home;
+export default Performance;

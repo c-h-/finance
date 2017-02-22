@@ -5,7 +5,6 @@ import {
 import ActionTypes from '../../redux/action_types.json';
 
 const initState = {
-  random: null,
 };
 
 export default function home(state = initState, action) {
@@ -14,12 +13,6 @@ export default function home(state = initState, action) {
       return {
         ...state,
         ...action.payload.home,
-      };
-    }
-    case ActionTypes.GET_RANDOM: {
-      return {
-        ...state,
-        random: action.payload.random,
       };
     }
     default:

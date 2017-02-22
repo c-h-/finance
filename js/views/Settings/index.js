@@ -7,7 +7,7 @@ import I18n from 'react-native-i18n';
 
 import styles from './styles';
 
-const Translation = () => {
+const Settings = () => {
   return (
     <View style={styles.container}>
       <Text>Translated greeting:</Text>
@@ -16,4 +16,4 @@ const Translation = () => {
   );
 };
 
-export default Translation;
+export default Settings;

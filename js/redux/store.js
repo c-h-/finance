@@ -13,6 +13,8 @@ import {
 
 import thunkMiddleware from 'redux-thunk';
 import loggerMiddleware from './middlewares/logger';
+import networkingWorker from './middlewares/networkingWorker';
+import dataWorker from './middlewares/dataWorker';
 
 import storageEngine from './storageEngine';
 import reducer from './reducers';
@@ -39,7 +41,7 @@ export function generateStore(initialState, hydrate = true) {
   // conditionally add args to store
   const args = [
     hydrate ? autoRehydrate() : null,
-    applyMiddleware(thunkMiddleware, loggerMiddleware),
+    applyMiddleware(networkingWorker, dataWorker, thunkMiddleware, loggerMiddleware),
   ].filter(arg => arg !== null);
 
   // create the store
