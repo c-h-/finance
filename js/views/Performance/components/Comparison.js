@@ -24,6 +24,9 @@ import {
   fetchUpdatedStats,
 } from '../actions';
 
+import misc from '../../../constants/misc.json';
+import symbolTypes from '../../../constants/symbolTypes.json';
+
 const {
   Popover,
   PopoverInteractionKind,
@@ -34,7 +37,7 @@ const modes = {
   COMPARE: 1,
 };
 
-const DELIMITER = '::::';
+const DELIMITER = misc.DELIMITER;
 
 const now = new Date();
 const lastYear = new Date();
@@ -80,7 +83,7 @@ class Comparison extends Component {
     return rows.map((row) => {
       return {
         label: row.name,
-        value: row.id,
+        value: `${symbolTypes.PORTFOLIO}::${row.id}`,
       };
     });
   }
@@ -190,7 +193,6 @@ class Comparison extends Component {
               noResultsText="Nothing Found"
               addLabelText="{label}"
               delimiter={DELIMITER}
-              className
               autoBlur
               clearable
               allowCreate

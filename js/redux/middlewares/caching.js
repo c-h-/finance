@@ -1,3 +1,5 @@
+import ActionTypes from '../action_types.json';
+
 const interceptedTypes = [
 ];
 
