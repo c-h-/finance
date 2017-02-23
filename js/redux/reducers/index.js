@@ -7,6 +7,7 @@ import AppNavigator from '../../components/AppNavigator';
 import transient from '../reducers/transient';
 import perfReducer from '../../views/Performance/reducer';
 import portfolios from '../../views/Portfolios/reducer';
+import settings from '../../views/Settings/reducer';
 
 export default combineReducers({
   transient,
@@ -15,4 +16,5 @@ export default combineReducers({
   },
   portfolios,
   perfReducer,
+  settings,
 });

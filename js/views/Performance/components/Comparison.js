@@ -42,6 +42,7 @@ lastYear.setFullYear(now.getFullYear() - 1);
 
 class Comparison extends Component {
   static propTypes = {
+    tabs: PropTypes.array,
     rows: PropTypes.array,
     id: PropTypes.number,
     dispatch: PropTypes.func,
@@ -56,13 +57,13 @@ class Comparison extends Component {
     mode: modes.SUM,
   }
   componentWillMount() {
-    const selectedComparison = this.props.rows.find(row => row.id === this.props.id);
+    const selectedComparison = this.props.tabs.find(row => row.id === this.props.id);
     if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
       this.updateStateFromStore(selectedComparison.data);
     }
   }
   componentWillReceiveProps(nextProps) {
-    const selectedComparison = nextProps.rows.find(row => row.id === nextProps.id);
+    const selectedComparison = nextProps.tabs.find(row => row.id === nextProps.id);
     if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
       this.updateStateFromStore(selectedComparison.data);
     }
@@ -250,7 +251,8 @@ class Comparison extends Component {
 
 function mapStateToProps(state) {
   return {
-    rows: state.perfReducer.tabs || [],
+    tabs: state.perfReducer.tabs || [],
+    rows: state.portfolios.rows || [],
   };
 }
 

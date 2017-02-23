@@ -13,20 +13,42 @@ import {
 
 import styles from './styles';
 
+import {
+  updateSetting,
+} from './actions';
+
 class Settings extends Component {
   static propTypes = {
-    settings: PropTypes.obj,
+    settings: PropTypes.object,
+    dispatch: PropTypes.func,
   }
   state = {
     quandl: '',
   }
-  componentWillReceiveProps(nextProps) {
-    const {
-      settings,
-    } = nextProps;
+  componentWillMount() {
     this.setState({
-      ...settings,
+      ...this.props.settings,
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      ...nextProps.settings,
+    });
+  }
+  handleChange = (key) => {
+    return (e) => {
+      this.setState({
+        [key]: e.target.value,
+      });
+    };
+  }
+  handleBlur = (key) => {
+    const {
+      dispatch,
+    } = this.props;
+    return (e) => {
+      dispatch(updateSetting(key, e.target.value));
+    };
   }
   render() {
     const {
@@ -39,8 +61,9 @@ class Settings extends Component {
         <Text style={styles.Text}>Quandl API key</Text>
         <TextInput
           style={styles.TextInput}
-          value={symbol || ''}
-          onChange={this.handleChange('symbol')}
+          value={quandl || ''}
+          onBlur={this.handleBlur('quandl')}
+          onChange={this.handleChange('quandl')}
         />
       </View>
     );
@@ -49,7 +72,7 @@ class Settings extends Component {
 
 function mapStateToProps(state) {
   return {
-    settings: state.settings.data,
+    settings: state.settings,
   };
 }
 
