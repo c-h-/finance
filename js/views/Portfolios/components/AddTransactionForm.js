@@ -67,6 +67,11 @@ class AddTransactionForm extends Component {
       isOpen: true,
     });
   }
+  closePopover = () => {
+    this.setState({
+      isOpen: false,
+    });
+  }
   resetState = () => {
     const {
       type,
@@ -78,11 +83,6 @@ class AddTransactionForm extends Component {
       t_type, // save these for easier multi-input
       type,
       date,
-    });
-  }
-  closePopover = () => {
-    this.setState({
-      isOpen: false,
     });
   }
   saveTransaction = () => {

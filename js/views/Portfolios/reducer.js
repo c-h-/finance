@@ -136,7 +136,6 @@ export default function portfolios(state = initState, action) {
       }
       const updateObj = buildUpdateObj(`${selectedTransactionIndex}.${col}`, valToSave);
       const updatedTrans = update(state.transactions, updateObj);
-      console.log('edit', updateObj, updatedTrans, valToSave, rowId, col);
       return {
         ...state,
         transactions: updatedTrans,

@@ -4,20 +4,35 @@ import {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    flexGrow: 1,
+    padding: 20,
+  },
+  buttonContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    flexDirection: 'row',
+  },
+  button: {
+    // marginBottom: 10,
+  },
+  Text: {
+    marginBottom: 10,
+  },
+  TextInput: {
+    borderColor: '#999',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    marginBottom: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  toolbarContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+  SelectContainer: {
+    marginRight: 10,
+    flexGrow: 1,
   },
 });
 
