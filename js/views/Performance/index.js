@@ -7,7 +7,7 @@ import {
 
 import styles from './styles';
 
-import ChartManager from './components/ChartManager';
+import TabManager from './components/TabManager';
 
 const Performance = () => {
   return (
@@ -15,7 +15,7 @@ const Performance = () => {
       <h2>
         Performance
       </h2>
-      <ChartManager />
+      <TabManager />
     </View>
   );
 };

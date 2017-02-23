@@ -13,6 +13,7 @@ import {
 
 import thunkMiddleware from 'redux-thunk';
 import cachingMiddleware from './middlewares/caching';
+import shapingMiddleware from './middlewares/shaping';
 import loggerMiddleware from './middlewares/logger';
 import networkingWorker from './middlewares/networkingWorker';
 import dataWorker from './middlewares/dataWorker';
@@ -44,6 +45,7 @@ export function generateStore(initialState, hydrate = true) {
     hydrate ? autoRehydrate() : null,
     applyMiddleware(
       cachingMiddleware,
+      shapingMiddleware,
       networkingWorker,
       dataWorker,
       thunkMiddleware,

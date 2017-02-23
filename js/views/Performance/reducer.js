@@ -18,6 +18,8 @@ const initState = {
   tabs: [
     getNewTab(),
   ],
+  chartData: {},
+  selectedTabIndex: 0,
 };
 
 export default function perfReducer(state = initState, action) {
@@ -26,6 +28,21 @@ export default function perfReducer(state = initState, action) {
       return {
         ...state,
         ...action.payload.perfReducer,
+      };
+    }
+    case ActionTypes.SWITCH_TABS: {
+      return {
+        ...state,
+        selectedTabIndex: action.payload.selectedTabIndex,
+      };
+    }
+    case ActionTypes.STORE_CHART_DATA: {
+      return {
+        ...state,
+        chartData: {
+          ...state.chartData,
+          [action.payload.id]: action.payload.data,
+        },
       };
     }
     case ActionTypes.ADD_PERF_TAB: {

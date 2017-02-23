@@ -5,7 +5,11 @@ import React, {
 import {
   connect,
 } from 'react-redux';
-
+import {
+  Text,
+  View,
+} from 'react-native';
+import ActionTypes from '../../../redux/action_types.json';
 
 import {
   format,
@@ -26,10 +30,6 @@ import {
 
 const {
   LineSeries,
-  ScatterSeries,
-  CircleMarker,
-  SquareMarker,
-  TriangleMarker,
 } = series;
 const {
   discontinuousTimeScaleProvider,
@@ -49,19 +49,51 @@ const {
   YAxis,
 } = axes;
 
-class Random extends Component {
+class ChartData extends Component {
+  static propTypes = {
+    dispatch: PropTypes.func,
+    cache: PropTypes.object,
+    selectedTab: PropTypes.number,
+  }
   render() {
+    const {
+      chartData,
+      selectedTab,
+    } = this.props;
+    const selectedData = chartData[selectedTab.toString()];
+    if (!selectedData || !selectedData.columns || !selectedData.columns.length) {
+      return <Text>Nothing to show</Text>;
+    }
+    console.log('ChartData', this.props.chartData);
+    const {
+      columns,
+      shapedData,
+    } = selectedData;
+    const data = shapedData;
+    data.columns = columns;
     return (
-      <ChartCanvas width={500} height={400}
-          margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
-          pointsPerPxThreshold={1}
-          seriesName="MSFT"
-          data={data}
-          xAccessor={d => d.date} xScaleProvider={discontinuousTimeScaleProvider}
-          xExtents={[new Date(2012, 0, 1), new Date(2012, 2, 2)]}>
-        <Chart id={1}
-            yExtents={d => [d.high, d.low, d.AAPLClose, d.GEClose]}>
-          <XAxis axisAt="bottom" orient="bottom"/>
+      <View>
+      <ChartCanvas
+        width={500}
+        height={400}
+        margin={{ left: 70, right: 70, top: 20, bottom: 30 }}
+        pointsPerPxThreshold={1}
+        seriesName="DATA"
+        data={data}
+      >
+      {/*
+      xAccessor={d => d.date}
+      xScaleProvider={discontinuousTimeScaleProvider}
+      xExtents={[new Date(2017, 0, 1), new Date(2017, 2, 2)]}
+      */}
+        <Chart
+          id={1}
+          yExtents={d => [d.value_1, d.value_2]}
+        >
+          {/*<XAxis
+            axisAt="bottom"
+            orient="bottom"
+          />
           <YAxis
             axisAt="right"
             orient="right"
@@ -72,49 +104,37 @@ class Random extends Component {
           <MouseCoordinateX
             at="bottom"
             orient="bottom"
-            displayFormat={timeFormat("%Y-%m-%d")} />
+            displayFormat={timeFormat('%Y-%m-%d')}
+          />
           <MouseCoordinateY
             at="right"
             orient="right"
-            displayFormat={format(".2f")} />
+            displayFormat={format('.2f')}
+          />*/}
 
           <LineSeries
-            yAccessor={d => d.AAPLClose}
+            yAccessor={d => d.value_1}
             stroke="#ff7f0e"
-            strokeDasharray="Dot" />
-          <ScatterSeries
-            yAccessor={d => d.AAPLClose}
-            marker={SquareMarker}
-            markerProps={{ width: 6, stroke: "#ff7f0e", fill: "#ff7f0e" }} />
-          <LineSeries
-            yAccessor={d => d.GEClose}
-            stroke="#2ca02c" />
-          <ScatterSeries
-            yAccessor={d => d.GEClose}
-            marker={TriangleMarker}
-            markerProps={{ width: 8, stroke: "#2ca02c", fill: "#2ca02c" }} />
-          <LineSeries
-            yAccessor={d => d.close}
-            strokeDasharray="LongDash" />
-          <ScatterSeries
-            yAccessor={d => d.close}
-            marker={CircleMarker}
-            markerProps={{ r: 3 }} />
-          <OHLCTooltip forChart={1} origin={[-40, 0]}/>
+            strokeDasharray="Dot"
+          />
+          {/*<OHLCTooltip
+            forChart={1}
+            origin={[-40, 0]}
+          />*/}
         </Chart>
 
         <CrossHairCursor />
       </ChartCanvas>
+      </View>
     );
   }
 }
 
-Random.propTypes = {
-  dispatch: PropTypes.func,
-};
-
 function mapStateToProps(state) {
-  return {};
+  return {
+    cache: state.cache,
+    chartData: state.perfReducer.chartData,
+  };
 }
 
-export default connect(mapStateToProps)(Random);
+export default connect(mapStateToProps)(ChartData);

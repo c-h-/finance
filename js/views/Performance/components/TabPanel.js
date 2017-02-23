@@ -23,6 +23,7 @@ import {
   saveComparison,
   fetchUpdatedStats,
 } from '../actions';
+import ChartContainer from './ChartContainer';
 
 import misc from '../../../constants/misc.json';
 import symbolTypes from '../../../constants/symbolTypes.json';
@@ -43,7 +44,7 @@ const now = new Date();
 const lastYear = new Date();
 lastYear.setFullYear(now.getFullYear() - 1);
 
-class Comparison extends Component {
+class TabPanel extends Component {
   static propTypes = {
     tabs: PropTypes.array,
     rows: PropTypes.array,
@@ -141,6 +142,9 @@ class Comparison extends Component {
     dispatch(fetchUpdatedStats(id, this.state));
   }
   render() {
+    const {
+      id,
+    } = this.props;
     const {
       selectedSymbols,
       dates,
@@ -246,6 +250,9 @@ class Comparison extends Component {
             Compute
           </View>
         </View>
+        <ChartContainer
+          selectedTab={id}
+        />
       </View>
     );
   }
@@ -258,4 +265,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Comparison);
+export default connect(mapStateToProps)(TabPanel);

@@ -1,8 +1,8 @@
+import getQuandlUrlsFromMixed from '../../utils/getQuandlUrlsFromMixed';
+
 import ActionTypes from '../../redux/action_types.json';
 import misc from '../../constants/misc.json';
-import symbolTypes from '../../constants/symbolTypes.json';
-import transStructure from '../../constants/transactionStructure.json';
-import buildQuandl from '../../utils/buildQuandlRequest';
+
 
 /**
  * Adds a new comparison tab
@@ -26,6 +26,15 @@ export function saveComparison(id, newState) {
   };
 }
 
+export function switchTabs(selectedTabIndex) {
+  return {
+    type: ActionTypes.SWITCH_TABS,
+    payload: {
+      selectedTabIndex,
+    },
+  };
+}
+
 /**
  * Kicks off request process to get data from API
  */
@@ -38,36 +47,9 @@ export function fetchUpdatedStats(id, reqData) {
     const {
       quandl,
     } = state.settings;
-    const symbols = reqData.selectedSymbols.split(',');
-    const newSymbols = [];
-    for (const i in symbols) {
-      if (symbols[i].indexOf(misc.SYM_DELIMETER) > -1) {
-        // found a symbol delimeted by a type
-        const t = symbols[i].split(misc.SYM_DELIMETER);
-        switch (t[0]) {
-          case symbolTypes.PORTFOLIO: {
-            const selectedTransactions = transactions.filter((trans) => {
-              return trans[transStructure.PID] === parseInt(t[1], 10);
-            });
-            selectedTransactions.forEach((trans) => {
-              if (newSymbols.indexOf(trans[transStructure.SYMBOL]) === -1) {
-                newSymbols.push(trans[transStructure.SYMBOL].toUpperCase());
-              }
-            });
-            break;
-          }
-          default:
-            newSymbols.push(symbols[i].toUpperCase());
-            break;
-        }
-      }
-      else {
-        newSymbols.push(symbols[i].toUpperCase());
-      }
-    }
 
-    const quandlURLs = newSymbols.map(symbol => buildQuandl(reqData.dates, symbol, quandl))
-      .filter(req => req); // get rid of erroring requests
+    const symbols = reqData.selectedSymbols.split(',');
+    const quandlURLs = getQuandlUrlsFromMixed(symbols, transactions, reqData.dates, quandl);
 
     return dispatch({
       type: ActionTypes.FETCH_STATS,

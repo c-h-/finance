@@ -1,6 +1,11 @@
-import hash from '../../utils/fastHash';
+import checkCacheKeys from '../../utils/checkCacheKeys';
 
 import ActionTypes from '../action_types.json';
+
+const interceptedTypes = [
+  ActionTypes.FETCH_STATS,
+  ActionTypes.START_CHART_UPDATE_FLOW,
+];
 
 /**
  * Caches API requests based on serialization of request attributes
@@ -8,23 +13,31 @@ import ActionTypes from '../action_types.json';
 export default function (store) {
   return next => (act) => {
     const action = act;
-    const {
-      cache,
-    } = store.getState();
 
-    if (action.type === ActionTypes.FETCH_STATS) {
-      const keys = action.payload.urls;
+    if (interceptedTypes.includes(action.type)) {
+      const {
+        cache,
+      } = store.getState();
       const currentCacheKeys = Object.keys(cache);
 
-      // check if our cache has hits for request being made
-      const misses = keys.filter(key => currentCacheKeys.indexOf(hash(key).toString()) === -1);
+      switch (action.type) {
+        case ActionTypes.FETCH_STATS: {
+          const keys = action.payload.urls;
+          // check if our cache has hits for request being made
+          const misses = checkCacheKeys(keys, currentCacheKeys);
 
-      if (misses.length) {
-        action.payload.urls = misses;
-        return next(action);
+          if (misses.length) {
+            action.payload.urls = misses;
+            return next(action);
+          }
+          console.warn('All requests were cached so shaping started right away');
+          return next({
+            type: ActionTypes.START_CHART_UPDATE_FLOW,
+          }); // everything was cached, don't grab anything
+        }
+        default:
+          return null;
       }
-      console.warn('All requests were cached so loading was cancelled');
-      return null; // everything was cached, don't grab anything
     }
     return next(action);
   };

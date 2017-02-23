@@ -56,7 +56,7 @@ class Settings extends Component {
     } = this.state;
     return (
       <View style={styles.container}>
-        <h2>Translated greeting:</h2>
+        <h2>Settings</h2>
         <Text style={styles.Text}>Change your settings here.</Text>
         <Text style={styles.Text}>Quandl API key</Text>
         <TextInput

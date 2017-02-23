@@ -44,7 +44,7 @@ function pad(str) {
  * format date yyyy-mm-dd
  */
 function formatDate(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth())}-${pad(date.getDate())}`;
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 /**

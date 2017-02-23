@@ -22,12 +22,13 @@ import {
   addNewComparison,
 } from '../actions';
 
-import Comparison from './Comparison';
+import PerfTabPanel from './TabPanel';
 
-class ChartManager extends Component {
+class TabManager extends Component {
   static propTypes = {
     tabs: PropTypes.array,
     dispatch: PropTypes.func,
+    selectedTab: PropTypes.number,
   }
   getTabs = () => {
     const {
@@ -46,7 +47,7 @@ class ChartManager extends Component {
     return tabs.map((row) => {
       return (
         <TabPanel>
-          <Comparison
+          <PerfTabPanel
             id={row.id}
           />
         </TabPanel>
@@ -60,6 +61,9 @@ class ChartManager extends Component {
     dispatch(addNewComparison());
   }
   render() {
+    const {
+      selectedTab,
+    } = this.props;
     return (
       <View>
         <Text style={styles.Text}>
@@ -77,7 +81,7 @@ class ChartManager extends Component {
             New Comparison
           </View>
         </View>
-        <Tabs>
+        <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTab}>
           {this.getTabs()}
           {this.getTabPanels()}
         </Tabs>
@@ -89,7 +93,8 @@ class ChartManager extends Component {
 function mapStateToProps(state) {
   return {
     tabs: state.perfReducer.tabs || [],
+    selectedTab: state.perfReducer.selectedTab,
   };
 }
 
-export default connect(mapStateToProps)(ChartManager);
+export default connect(mapStateToProps)(TabManager);
