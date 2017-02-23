@@ -87,7 +87,6 @@ class ChartManager extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log('state', state);
   return {
     tabs: state.perfReducer.tabs || [],
   };

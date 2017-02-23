@@ -21,6 +21,7 @@ import styles from '../styles';
 import parseDate from '../../../utils/parseDate';
 import {
   saveComparison,
+  fetchUpdatedStats,
 } from '../actions';
 
 const {
@@ -54,9 +55,17 @@ class Comparison extends Component {
     ],
     mode: modes.SUM,
   }
+  componentWillMount() {
+    const selectedComparison = this.props.rows.find(row => row.id === this.props.id);
+    if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
+      this.updateStateFromStore(selectedComparison.data);
+    }
+  }
   componentWillReceiveProps(nextProps) {
     const selectedComparison = nextProps.rows.find(row => row.id === nextProps.id);
-    this.setState(selectedComparison);
+    if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
+      this.updateStateFromStore(selectedComparison.data);
+    }
   }
   setSelected = (val) => {
     this.saveState({
@@ -74,17 +83,30 @@ class Comparison extends Component {
       };
     });
   }
+  updateStateFromStore = (newState) => {
+    const toUpdate = {
+      ...newState,
+    };
+    if (typeof toUpdate.dates[0] === 'string') {
+      toUpdate.dates[0] = new Date(toUpdate.dates[0]);
+    }
+    if (typeof toUpdate.dates[1] === 'string') {
+      toUpdate.dates[1] = new Date(toUpdate.dates[1]);
+    }
+    this.setState(newState);
+  }
   saveState = (newState) => {
     const {
       dispatch,
       id,
     } = this.props;
-    this.setState(newState);
-    const toSave = {
-      ...newState,
-    };
-    delete toSave.isOpen;
-    dispatch(saveComparison(id, toSave));
+    this.setState(newState, () => {
+      const toSave = {
+        ...this.state,
+      };
+      delete toSave.isOpen;
+      dispatch(saveComparison(id, toSave));
+    });
   }
   handleDateChange = (dates) => {
     this.saveState({
@@ -107,7 +129,12 @@ class Comparison extends Component {
     });
   }
   handleRefresh = () => {
-    // 
+    // intention is to see updated charts from new selection
+    const {
+      dispatch,
+      id,
+    } = this.props;
+    dispatch(fetchUpdatedStats(id, this.state));
   }
   render() {
     const {
@@ -223,7 +250,7 @@ class Comparison extends Component {
 
 function mapStateToProps(state) {
   return {
-    rows: state.portfolios.rows || [],
+    rows: state.perfReducer.tabs || [],
   };
 }
 

@@ -1,6 +1,9 @@
 import {
   REHYDRATE,
 } from 'redux-persist/constants';
+import update from 'immutability-helper';
+
+import buildUpdateObj from '../../utils/buildUpdateObj';
 
 import ActionTypes from '../../redux/action_types.json';
 
@@ -42,13 +45,29 @@ export default function perfReducer(state = initState, action) {
       const {
         tabs,
       } = state;
-      const newID = tabs.length ? Math.max(...tabs.map(row => row.id)) + 1 : 1;
+      const {
+        id,
+        newState,
+      } = action.payload;
+
+      let selectedTabIndex;
+      for (const i in tabs) {
+        if (tabs[i].id === id) {
+          selectedTabIndex = i;
+          break;
+        }
+      }
+
+      const newTabData = {
+        id,
+        data: newState,
+      };
+
+      const updateObj = buildUpdateObj(selectedTabIndex.toString(), newTabData);
+      const updatedTabs = update(tabs, updateObj);
       return {
         ...state,
-        tabs: [
-          ...tabs,
-          getNewTab(newID),
-        ],
+        tabs: updatedTabs,
       };
     }
     default:
