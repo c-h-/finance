@@ -105,18 +105,23 @@ module.exports = {
         test: /\.(png|jpg|jpeg|gif|svg)$/,
         loader: 'url-loader',
         options: {
-          limit: 8192,
           name: 'images/[name]_[hash:base64:5].[ext]',
         },
+      },
+      // CSS
+      {
+        test: /\.css/,
+        loader: [
+          'style-loader',
+          'css-loader',
+        ],
       },
       // Fonts
       // Inline base64 URLs for <=8k fonts, direct URLs for the rest
       {
-        test: /\.(woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        include: path.join(process.cwd(), 'node_modules/react-native-vector-icons'),
+        test: /\.(woff|woff2|ttf|eot)$/,
+        loader: 'file-loader',
         options: {
-          limit: 8192,
           name: 'fonts/[name]_[hash:base64:5].[ext]',
         },
       },

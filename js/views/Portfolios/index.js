@@ -1,19 +1,22 @@
 import React from 'react';
 import {
   View,
-  Text,
 } from 'react-native';
 
+import PortfolioManager from './components/PortfolioManager';
+
+// add blueprint table css
+import '../../../node_modules/@blueprintjs/table/dist/table.css';
+
 import styles from './styles';
-import Icon from '../../components/Icon';
 
 const Portfolios = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.welcome}>
-        Icons
-      </Text>
-      <Icon name="person" />
+      <h2>
+        Portfolios
+      </h2>
+      <PortfolioManager />
     </View>
   );
 };

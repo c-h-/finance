@@ -5,14 +5,34 @@ import {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    padding: 20,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+  buttonContainer: {
+    alignItems: 'flex-start',
+    marginBottom: 10,
+    flexDirection: 'row',
+  },
+  button: {
+    marginBottom: 10,
+  },
+  Text: {
+    marginBottom: 10,
+  },
+  TextInput: {
+    borderColor: '#999',
+    borderWidth: 1,
+    borderStyle: 'solid',
+    marginBottom: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+  },
+  OverlayContainer: {
+    zIndex: 20,
+    width: '80vw',
+    maxHeight: '80vh',
+    overflow: 'auto',
+    marginTop: '10vh',
+    marginHorizontal: 'auto',
   },
 });
 
