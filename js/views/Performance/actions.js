@@ -2,6 +2,7 @@ import ActionTypes from '../../redux/action_types.json';
 import misc from '../../constants/misc.json';
 import symbolTypes from '../../constants/symbolTypes.json';
 import transStructure from '../../constants/transactionStructure.json';
+import buildQuandl from '../../utils/buildQuandlRequest';
 
 /**
  * Adds a new comparison tab
@@ -37,14 +38,7 @@ export function fetchUpdatedStats(id, reqData) {
     const {
       quandl,
     } = state.settings;
-    const toSend = {
-      ...reqData,
-    };
-    const symbols = toSend.selectedSymbols.split(',');
-    delete toSend.data;
-    delete toSend.isOpen;
-    delete toSend.id;
-    delete toSend.selectedSymbols;
+    const symbols = reqData.selectedSymbols.split(',');
     const newSymbols = [];
     for (const i in symbols) {
       if (symbols[i].indexOf(misc.SYM_DELIMETER) > -1) {
@@ -71,16 +65,15 @@ export function fetchUpdatedStats(id, reqData) {
         newSymbols.push(symbols[i].toUpperCase());
       }
     }
-    toSend.symbols = newSymbols;
+
+    const quandlURLs = newSymbols.map(symbol => buildQuandl(reqData.dates, symbol, quandl))
+      .filter(req => req); // get rid of erroring requests
 
     return dispatch({
       type: ActionTypes.FETCH_STATS,
       payload: {
-        id,
-        reqData: toSend,
-        api: {
-          quandl,
-        },
+        urls: quandlURLs,
+        apiType: misc.apiTypes.QUANDL,
       },
       meta: {
         WebWorker: true,

@@ -1,4 +1,7 @@
 {
   "DELIMETER": "::::",
-  "SYM_DELIMETER": "::"
+  "SYM_DELIMETER": "::",
+  "apiTypes": {
+    "QUANDL": 0
+  }
 }

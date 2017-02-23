@@ -12,6 +12,7 @@ import {
 } from 'redux-persist';
 
 import thunkMiddleware from 'redux-thunk';
+import cachingMiddleware from './middlewares/caching';
 import loggerMiddleware from './middlewares/logger';
 import networkingWorker from './middlewares/networkingWorker';
 import dataWorker from './middlewares/dataWorker';
@@ -41,7 +42,13 @@ export function generateStore(initialState, hydrate = true) {
   // conditionally add args to store
   const args = [
     hydrate ? autoRehydrate() : null,
-    applyMiddleware(networkingWorker, dataWorker, thunkMiddleware, loggerMiddleware),
+    applyMiddleware(
+      cachingMiddleware,
+      networkingWorker,
+      dataWorker,
+      thunkMiddleware,
+      loggerMiddleware
+    ),
   ].filter(arg => arg !== null);
 
   // create the store
