@@ -22,7 +22,7 @@ const testdata = [
     },
     {
     label: 'somethingB',
-    values: [{x: 0, y: 3}, {x: 3.5, y: 8}, {x: 4, y: 7}, {x: 4.5, y: 7}, {x: 5, y: 7.8}, {x: 5.5, y: 9}]
+    values: [{x: 0, y: 3}, {x: 1.3, y: 4}, {x: 3, y: 7}, {x: 3.5, y: 8}, {x: 4, y: 7}, {x: 4.5, y: 7}, {x: 5, y: 7.8}, {x: 5.5, y: 9}]
     }
 ];
 
@@ -36,7 +36,7 @@ class ChartData extends Component {
       chartData,
       selectedTab,
     } = this.props;
-    const selectedData = chartData[selectedTab.toString()];
+    // const selectedData = chartData[selectedTab.toString()];
     console.log('data', selectedTab, chartData);
     // if (!selectedData || !selectedData.columns || !selectedData.columns.length) {
     //   return <Text>Nothing to show</Text>;

@@ -1,15 +1,9 @@
 import React, {
   Component,
-  PropTypes,
 } from 'react';
 import {
   View,
 } from 'react-native';
-import {
-  connect,
-} from 'react-redux';
-
-import styles from '../styles';
 
 import Chart from './Chart';
 
@@ -18,7 +12,6 @@ class ChartContainer extends Component {
     width: 400,
   }
   handleLayout = (e) => {
-    console.info('LAYOUT', e);
     if (
       e
       && e.nativeEvent

@@ -111,9 +111,10 @@ class ChartData extends Component {
     const {
       chartData,
       selectedTabIndex,
+      tabs,
     } = this.props.perfReducer;
     const selectedData = chartData[selectedTabIndex.toString()];
-    console.log('data', selectedTabIndex, chartData);
+    console.log('data', selectedTabIndex, chartData, tabs);
     if (!selectedData || !selectedData.columns || !selectedData.columns.length) {
       return <Text>Nothing to show</Text>;
     }
