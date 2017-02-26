@@ -44,12 +44,10 @@ class TabManager extends Component {
     const {
       tabs,
     } = this.props;
-    return tabs.map((row) => {
+    return tabs.map(() => {
       return (
         <TabPanel>
-          <PerfTabPanel
-            id={row.id}
-          />
+          <PerfTabPanel />
         </TabPanel>
       );
     });

@@ -1,4 +1,5 @@
 import ActionTypes from '../redux/action_types.json';
+import formatDate from '../utils/formatDate';
 
 const dispatch = self.postMessage;
 
@@ -46,7 +47,7 @@ function shapeResponse(data) {
     }
     const shaped = data.dataset.data.map((row) => {
       return {
-        date: row[colsDef.DATE],
+        date: formatDate(row[colsDef.DATE]),
         value: row[valueColumnToKeep],
       };
     });

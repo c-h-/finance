@@ -1,3 +1,4 @@
+import formatDate from './formatDate';
 
 /**
  * payload looks like:
@@ -31,20 +32,6 @@ function encodeQueryData(data) {
     ret.push(`${encodeURIComponent(d)}=${encodeURIComponent(data[d])}`);
   }
   return ret.join('&');
-}
-
-/**
- * ensure string is two-digits long
- */
-function pad(str) {
-  return String(`00${str}`).slice(-2);
-}
-
-/**
- * format date yyyy-mm-dd
- */
-function formatDate(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
 /**

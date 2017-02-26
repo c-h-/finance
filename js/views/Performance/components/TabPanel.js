@@ -48,8 +48,8 @@ class TabPanel extends Component {
   static propTypes = {
     tabs: PropTypes.array,
     rows: PropTypes.array,
-    id: PropTypes.number,
     dispatch: PropTypes.func,
+    id: PropTypes.number,
   }
   state = {
     selectedSymbols: '',
@@ -62,13 +62,21 @@ class TabPanel extends Component {
   }
   componentWillMount() {
     const selectedComparison = this.props.tabs.find(row => row.id === this.props.id);
-    if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
+    if (
+      selectedComparison
+      && selectedComparison.data
+      && Object.keys(selectedComparison.data).length
+    ) {
       this.updateStateFromStore(selectedComparison.data);
     }
   }
   componentWillReceiveProps(nextProps) {
     const selectedComparison = nextProps.tabs.find(row => row.id === nextProps.id);
-    if (selectedComparison.data && Object.keys(selectedComparison.data).length) {
+    if (
+      selectedComparison
+      && selectedComparison.data
+      && Object.keys(selectedComparison.data).length
+    ) {
       this.updateStateFromStore(selectedComparison.data);
     }
   }
@@ -142,9 +150,6 @@ class TabPanel extends Component {
     dispatch(fetchUpdatedStats(id, this.state));
   }
   render() {
-    const {
-      id,
-    } = this.props;
     const {
       selectedSymbols,
       dates,
@@ -250,9 +255,7 @@ class TabPanel extends Component {
             Compute
           </View>
         </View>
-        <ChartContainer
-          selectedTab={id}
-        />
+        <ChartContainer />
       </View>
     );
   }
@@ -262,6 +265,7 @@ function mapStateToProps(state) {
   return {
     tabs: state.perfReducer.tabs || [],
     rows: state.portfolios.rows || [],
+    id: state.perfReducer.selectedTabIndex,
   };
 }
 
