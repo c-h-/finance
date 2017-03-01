@@ -97,48 +97,11 @@ function compareStats(d1, d2) {
 }
 
 /**
- * Shapes data for a chart to display
+ * Unused function for making sure there's a data point for every point in time.
+ * Would be easy to build interpolation into this function.
  */
-function shapeDataForChart(data, dates, mode) {
-  const shapedData = [];
-
-  /**
-   * Sets value props from a point to obj
-   */
-  function setValues(point, obj = {}) {
-    const o = obj;
-    if (!o.date && point.date) {
-      o.date = point.date;
-    }
-    for (const key in point) {
-      if (key !== 'date') {
-        o[key] = +point[key];
-      }
-    }
-    return o;
-  }
-
-  // merge data points
-  data.forEach((dataset) => {
-    dataset.forEach((point) => {
-      const shapedPoint = shapedData.find((x) => {
-        return x.date === point.date;
-      });
-      if (shapedPoint) {
-        setValues(point, shapedPoint);
-      }
-      else {
-        shapedData.push(setValues(point));
-      }
-    });
-  });
-
-  // get columns
-  const columns = shapedData[0] ? Object.keys(shapedData[0]) : ['date'];
-
-  // chronological order
-  shapedData.reverse();
-
+/*
+function ensureDataPointForEveryPointInTime(dates, shapedData, columns) {
   // ensure there's points for every date in range
   const start = new Date(dates[0]).getTime();
   const end = dates[1] ? new Date(dates[1]).getTime() : start;
@@ -186,6 +149,53 @@ function shapeDataForChart(data, dates, mode) {
       toAdd += 1000 * 60 * 60 * 24; // 1000 ms/s * 60 s/m * 60 m/h * 24 h/d => 1 day in ms
     }
   }
+  return shapedData;
+}
+*/
+
+/**
+ * Shapes data for a chart to display
+ */
+function shapeDataForChart(data, dates, mode) {
+  const shapedData = [];
+
+  /**
+   * Sets value props from a point to obj
+   */
+  function setValues(point, obj = {}) {
+    const o = obj;
+    if (!o.date && point.date) {
+      o.date = point.date;
+    }
+    for (const key in point) {
+      if (key !== 'date') {
+        o[key] = +point[key];
+      }
+    }
+    return o;
+  }
+
+  // merge data points
+  data.forEach((dataset) => {
+    dataset.forEach((point) => {
+      const shapedPoint = shapedData.find((x) => {
+        return x.date === point.date;
+      });
+      if (shapedPoint) {
+        setValues(point, shapedPoint);
+      }
+      else {
+        shapedData.push(setValues(point));
+      }
+    });
+  });
+
+  // get columns
+  const columns = shapedData[0] ? Object.keys(shapedData[0]) : ['date'];
+
+  // chronological order
+  shapedData.reverse();
+
 
   // convert to all ms time
   shapedData.forEach((p) => {

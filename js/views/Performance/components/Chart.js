@@ -65,6 +65,27 @@ const markers = [
   ],
 ];
 
+const colors = [
+  '#2ecc71',
+  '#3498db',
+  '#9b59b6',
+  '#34495e',
+  '#f1c40f',
+  '#e67e22',
+  '#e74c3c',
+  '#95a5a6',
+  '#1abc9c',
+  '#27ae60',
+  '#2980b9',
+  '#8e44ad',
+  '#2c3e50',
+  '#f39c12',
+  '#d35400',
+  '#c0392b',
+  '#7f8c8d',
+  '#16a085',
+];
+
 class ChartData extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
@@ -147,22 +168,33 @@ class ChartData extends Component {
               displayFormat={format('.2f')}
             />
             {
-              seriesCols.map(col => (
-                <LineSeries
-                  yAccessor={d => d[col]}
-                />
-              ))
+              seriesCols.map((col, i) => {
+                const color = colors[i % colors.length];
+                return (
+                  <LineSeries
+                    yAccessor={d => d[col]}
+                    stroke={color}
+                  />
+                );
+              })
             }
             {
-              seriesCols.map((col, i) => (
-                <ScatterSeries
-                  yAccessor={d => d[col]}
-                  marker={markers[i % markers.length][0]}
-                  markerProps={markers[i % markers.length][1]}
-                />
-              ))
+              seriesCols.map((col, i) => {
+                const color = colors[i % colors.length];
+                return (
+                  <ScatterSeries
+                    yAccessor={d => d[col]}
+                    marker={markers[i % markers.length][0]}
+                    markerProps={{
+                      ...markers[i % markers.length][1],
+                      stroke: color,
+                      fill: color,
+                    }}
+                  />
+                );
+              })
             }
-            <Tooltip forChart={1} origin={[-40, 0]} />
+            <Tooltip forChart={1} origin={[40, 0]} />
           </Chart>
           <CrossHairCursor />
         </ChartCanvas>

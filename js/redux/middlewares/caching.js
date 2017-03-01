@@ -4,7 +4,6 @@ import ActionTypes from '../action_types.json';
 
 const interceptedTypes = [
   ActionTypes.FETCH_STATS,
-  ActionTypes.START_CHART_UPDATE_FLOW,
 ];
 
 /**

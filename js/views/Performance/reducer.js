@@ -74,7 +74,6 @@ export default function perfReducer(state = initState, action) {
           break;
         }
       }
-      console.log('selectedTabID', selectedTabID, id, tabs, action.payload);
 
       const newTabData = {
         id,
