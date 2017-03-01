@@ -10,5 +10,6 @@ function pad(str) {
  */
 export default function formatDate(date) {
   const d = date instanceof Date ? date : new Date(date);
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  d.setUTCHours(0, 0, 0, 0);
+  return `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`;
 }

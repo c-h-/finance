@@ -19,7 +19,7 @@ const initState = {
     getNewTab(),
   ],
   chartData: {},
-  selectedTabIndex: 0,
+  selectedTabID: 1,
 };
 
 export default function perfReducer(state = initState, action) {
@@ -33,7 +33,7 @@ export default function perfReducer(state = initState, action) {
     case ActionTypes.SWITCH_TABS: {
       return {
         ...state,
-        selectedTabIndex: action.payload.selectedTabIndex,
+        selectedTabID: action.payload.selectedTabID,
       };
     }
     case ActionTypes.STORE_CHART_DATA: {
@@ -67,20 +67,21 @@ export default function perfReducer(state = initState, action) {
         newState,
       } = action.payload;
 
-      let selectedTabIndex;
+      let selectedTabID;
       for (const i in tabs) {
         if (tabs[i].id === id) {
-          selectedTabIndex = i;
+          selectedTabID = i;
           break;
         }
       }
+      console.log('selectedTabID', selectedTabID, id, tabs, action.payload);
 
       const newTabData = {
         id,
         data: newState,
       };
 
-      const updateObj = buildUpdateObj(selectedTabIndex.toString(), newTabData);
+      const updateObj = buildUpdateObj(selectedTabID.toString(), newTabData);
       const updatedTabs = update(tabs, updateObj);
       return {
         ...state,

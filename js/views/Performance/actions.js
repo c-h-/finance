@@ -26,11 +26,11 @@ export function saveComparison(id, newState) {
   };
 }
 
-export function switchTabs(selectedTabIndex) {
+export function switchTabs(selectedTabID) {
   return {
     type: ActionTypes.SWITCH_TABS,
     payload: {
-      selectedTabIndex,
+      selectedTabID,
     },
   };
 }

@@ -28,7 +28,7 @@ class TabManager extends Component {
   static propTypes = {
     tabs: PropTypes.array,
     dispatch: PropTypes.func,
-    selectedTab: PropTypes.number,
+    selectedTabID: PropTypes.number,
   }
   getTabs = () => {
     const {
@@ -60,7 +60,7 @@ class TabManager extends Component {
   }
   render() {
     const {
-      selectedTab,
+      selectedTabID,
     } = this.props;
     return (
       <View>
@@ -79,7 +79,7 @@ class TabManager extends Component {
             New Comparison
           </View>
         </View>
-        <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTab}>
+        <Tabs onChange={this.handleTabChange} selectedTabID={selectedTabID}>
           {this.getTabs()}
           {this.getTabPanels()}
         </Tabs>
@@ -91,7 +91,7 @@ class TabManager extends Component {
 function mapStateToProps(state) {
   return {
     tabs: state.perfReducer.tabs || [],
-    selectedTab: state.perfReducer.selectedTab,
+    selectedTabID: state.perfReducer.selectedTabID,
   };
 }
 

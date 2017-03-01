@@ -34,7 +34,7 @@ export default function (store) {
 
           // get the selected tab, then its selected symbols, then quandl urls,
           // then finally generate the hashes we need to check cache against
-          const selectedTab = perfReducer.tabs[perfReducer.selectedTabIndex];
+          const selectedTab = perfReducer.tabs.find(tab => tab.id === perfReducer.selectedTabID);
           const symbols = selectedTab.data.selectedSymbols.split(',');
           const keys = (getQuandlUrlsFromMixed(
             symbols,
@@ -45,7 +45,6 @@ export default function (store) {
           const misses = checkCacheKeys(keys, currentCacheKeys);
           if (!misses.length) {
             const cacheEntriesToShape = keys.map(key => cache[hash(key)]);
-            console.log('entries', cacheEntriesToShape);
             // make sure cache is full for our needed symbols
             return next({
               type: ActionTypes.SHAPE_CHART_DATA,
@@ -53,6 +52,7 @@ export default function (store) {
                 data: cacheEntriesToShape,
                 mode: selectedTab.data.mode,
                 id: selectedTab.id,
+                dates: selectedTab.data.dates,
               },
               meta: {
                 WebWorker: true,

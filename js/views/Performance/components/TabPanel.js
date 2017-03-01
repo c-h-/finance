@@ -265,7 +265,7 @@ function mapStateToProps(state) {
   return {
     tabs: state.perfReducer.tabs || [],
     rows: state.portfolios.rows || [],
-    id: state.perfReducer.selectedTabIndex,
+    id: state.perfReducer.selectedTabID,
   };
 }
 

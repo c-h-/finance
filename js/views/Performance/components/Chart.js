@@ -21,6 +21,9 @@ import {
   axes,
 } from 'react-stockcharts';
 
+const { LineSeries } = series;
+const { XAxis, YAxis } = axes;
+
 import ActionTypes from '../../../redux/action_types.json';
 
 const testData = [
@@ -44,28 +47,28 @@ const testData = [
 
 const test2Data = [
   {
-    'date': new Date('2017-01-8').getTime(),
-    'value-1': +119.11,
+    'date': new Date('2017-02-20').getTime(),
+    'value_1': +119.11,
     // 'value-2': 230,
   },
   {
-    'date': new Date('2017-01-9').getTime(),
-    'value-1': +118.895,
+    'date': new Date('2017-02-21').getTime(),
+    'value_1': +118.895,
     // 'value-2': 229.06,
   },
   {
-    'date': new Date('2017-01-10').getTime(),
-    'value-1': +118.74,
+    'date': new Date('2017-02-22').getTime(),
+    'value_1': +118.74,
     // 'value-2': 229.07,
   },
   {
-    'date': new Date('2017-01-11').getTime(),
-    'value-1': +118.77,
+    'date': new Date('2017-02-23').getTime(),
+    'value_1': +118.77,
     // 'value-2': 232,
   },
   {
-    'date': new Date('2017-01-12').getTime(),
-    'value-1': +117.95,
+    'date': new Date('2017-02-24').getTime(),
+    'value_1': +117.95,
     // 'value-2': 228.97,
   },
 ];
@@ -98,11 +101,6 @@ const test3 = [
   }
 ];
 
-const { AreaSeries } = series;
-const { XAxis, YAxis } = axes;
-
-const parseDate = timeParse('%Y-%m-%d');
-
 class ChartData extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
@@ -110,36 +108,24 @@ class ChartData extends Component {
   render() {
     const {
       chartData,
-      selectedTabIndex,
+      selectedTabID,
       tabs,
     } = this.props.perfReducer;
-    const selectedData = chartData[selectedTabIndex.toString()];
-    console.log('data', selectedTabIndex, chartData, tabs);
-    if (!selectedData || !selectedData.columns || !selectedData.columns.length) {
-      return <Text>Nothing to show</Text>;
+    const selectedData = tabs.find(tab => tab.id === selectedTabID);
+    let dates = null;
+    if (selectedData && selectedData.data) {
+      dates = selectedData.data.dates;
     }
-    const {
-      columns,
-      shapedData,
-    } = selectedData;
-    const data = [...shapedData].map((point) => {
-      return {
-        ...point,
-      };
-    });
-    data.forEach((point, i) => {
-      for (const key in point) {
-        console.log('point', point, key, data[i][key]);
-        if (key === 'date') {
-          data[i][key] = new Date(parseDate(data[i][key])).getTime();
-        }
-        else {
-          data[i][key] = +data[i][key];
-        }
-      }
-    });
-    console.log('ChartData', data);
-    return <Text>Nothing to show</Text>;
+    let selectedChartData;
+    let seriesCols;
+    if (chartData && chartData[selectedData.id] && chartData[selectedData.id].shapedData) {
+      selectedChartData = chartData[selectedData.id].shapedData;
+      seriesCols = chartData[selectedData.id].columns.filter(col => col !== 'date');
+    }
+    if (!dates || !selectedChartData) {
+      return <Text>Fill out the toolbar and click Compute</Text>;
+    }
+    console.info('rendering', selectedChartData, test2Data);
     return (
       <View>
         <ChartCanvas
@@ -152,18 +138,23 @@ class ChartData extends Component {
             bottom: 30,
           }}
           seriesName="MSFT"
-          data={data}
+          data={selectedChartData}
           type="svg"
-          xAccessor={d => {
-            console.log('d', d, d ? new Date(d.date) : null);
-            return d ? d.date : null;
-          }}
+          xAccessor={d => (d ? d.date : null)}
           xScale={scaleTime()}
-          xExtents={[new Date(2017, 1, 19), new Date(2017, 2, 10)]}
+          xExtents={dates.map(date => new Date(date))}
         >
           <Chart
             id={0}
-            yExtents={d => d['value-1']}
+            yExtents={(d) => {
+              const figs = [];
+              for (const key in d) {
+                if (key !== 'date') {
+                  figs.push(d[key]);
+                }
+              }
+              return figs;
+            }}
           >
             <XAxis
               axisAt="bottom"
@@ -174,9 +165,15 @@ class ChartData extends Component {
               axisAt="left"
               orient="left"
             />
-            <AreaSeries
-              yAccessor={d => d['value-1']}
-            />
+            {
+              seriesCols.map((col) => {
+                return (
+                  <LineSeries
+                    yAccessor={d => d[col]}
+                  />
+                );
+              })
+            }
           </Chart>
         </ChartCanvas>
       </View>

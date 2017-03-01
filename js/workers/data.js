@@ -1,5 +1,4 @@
 import ActionTypes from '../redux/action_types.json';
-import formatDate from '../utils/formatDate';
 
 const dispatch = self.postMessage;
 
@@ -47,7 +46,7 @@ function shapeResponse(data) {
     }
     const shaped = data.dataset.data.map((row) => {
       return {
-        date: formatDate(row[colsDef.DATE]),
+        date: row[colsDef.DATE], // formatDate(),
         value: row[valueColumnToKeep],
       };
     });
@@ -59,51 +58,128 @@ function shapeResponse(data) {
   }
 }
 
+/**
+ * gets stats from a date
+ */
+function getStats(date) {
+  const d = date instanceof Date ? date : new Date(date);
+  return {
+    y: d.getUTCFullYear(),
+    m: d.getUTCMonth(),
+    d: d.getUTCDate(),
+  };
+}
 
 /**
- *[ {
-  "date": "2007-01-03T05:00:00.000Z",
-  "open": 29.91,
-  "high": 30.25,
-  "low": 29.4,
-  "close": 29.86,
-  "volume": 76935100,
-  "SP500Close": 1416.6,
-  "AAPLClose": 11.97,
-  "GEClose": 37.97
-} ]
-columns: [
-  "date",
-  "open",
-  "high",
-  "low",
-  "close",
-  "volume",
-  "SP500Close",
-  "AAPLClose",
-  "GEClose"
-] */
+ * Compares 2 date stats.
+ * Returns 0 if dates are same.
+ * Returns 1 if d1 is more recent than d2
+ * Returns -1 if d1 is more stale than d2
+ */
+function compareStats(d1, d2) {
+  if (d1.y === d2.y) {
+    if (d1.m === d2.m) {
+      if (d1.d === d2.d) {
+        return 0;
+      }
+      else {
+        return d1.d > d2.d ? 1 : -1;
+      }
+    }
+    else {
+      return d1.m > d2.m ? 1 : -1;
+    }
+  }
+  else {
+    return d1.y > d2.y ? 1 : -1;
+  }
+}
+
 /**
  * Shapes data for a chart to display
  */
-function shapeDataForChart(data, mode) {
+function shapeDataForChart(data, dates, mode) {
   const shapedData = [];
+  // merge data points
   data.forEach((dataset, i) => {
-    // console.log('dataset', dataset);
     dataset.forEach((point) => {
-      const shapedPoint = shapedData.find(x => x.date === point.date);
+      const shapedPoint = shapedData.find((x) => {
+        return x.date === point.date;
+      });
       if (shapedPoint) {
-        shapedPoint[`value_${i}`] = point.value;
+        shapedPoint[`value_${i}`] = +point.value;
       }
       else {
         shapedData.push({
           date: point.date,
-          [`value_${i}`]: point.value,
+          [`value_${i}`]: +point.value,
         });
       }
     });
   });
+
+  // get columns
   const columns = ['date', ...data.map((set, i) => `value_${i}`)];
+
+  // chronological order
+  shapedData.reverse();
+
+  // ensure there's points for every date in range
+  const start = new Date(dates[0]).getTime();
+  const end = dates[1] ? new Date(dates[1]).getTime() : start;
+  if (start < end) {
+    let toAdd = new Date(shapedData[0].date).getTime();
+    while (toAdd <= end) {
+      let point;
+      let pointIndex;
+      const newStats = getStats(toAdd);
+      for (const i in shapedData) {
+        const currStats = getStats(shapedData[i].date);
+        const statPlacement = compareStats(newStats, currStats);
+        if (statPlacement === 0) {
+          // point exists
+          point = shapedData[i];
+          pointIndex = i;
+          break;
+        }
+        // newStats represents a date more stale than shapedData point
+        else if (statPlacement === -1) {
+          // contents are sorted chronologically so if date is larger, means we don't
+          // have date we're looking for
+          pointIndex = i;
+          break;
+        }
+      }
+      if (!point && pointIndex) {
+        // no point at all, add one at pointIndex
+        const newVal = {};
+        // set new values to zero
+        columns.forEach(col => (newVal[col] = 0));
+        // add date
+        newVal.date = toAdd;
+        shapedData.splice(pointIndex, 0, newVal);
+      }
+      else if (point && pointIndex) {
+        // ensure every value is set
+        columns.forEach((col) => {
+          if (!point[col] && col !== 'date') {
+            point[col] = 0;
+          }
+        });
+      }
+      // go to next day
+      toAdd += 1000 * 60 * 60 * 24; // 1000 ms/s * 60 s/m * 60 m/h * 24 h/d => 1 day in ms
+    }
+  }
+
+  // convert to all ms time
+  shapedData.forEach((p) => {
+    const point = p;
+    if (typeof point.date === 'string') {
+      point.date = new Date(point.date).getTime();
+    }
+  });
+
   return {
     shapedData,
     columns,
@@ -131,16 +207,15 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
       break;
     }
     case ActionTypes.SHAPE_CHART_DATA: {
-      // payload: {
-      //           data,
-      //           mode: selectedTab.mode,
-      //            id
-      //         },
       dispatch({
         type: ActionTypes.STORE_CHART_DATA,
         payload: {
           id: action.payload.id,
-          data: shapeDataForChart(action.payload.data, action.payload.mode),
+          data: shapeDataForChart(
+            action.payload.data,
+            action.payload.dates,
+            action.payload.mode
+          ),
         },
       });
       break;
