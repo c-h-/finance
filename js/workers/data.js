@@ -33,6 +33,7 @@ function shapeResponse(data) {
   if (data && data.dataset && data.dataset.data && data.dataset.column_names) {
     let valueColumnToKeep;
     let colsDef;
+    const valueColName = data.dataset.dataset_code || 'value';
     switch (data.dataset.database_code) {
       case 'BAVERAGE':
         valueColumnToKeep = QUANDL_CURRENCY_COLUMNS.AVG_24;
@@ -46,11 +47,11 @@ function shapeResponse(data) {
     }
     const shaped = data.dataset.data.map((row) => {
       return {
-        date: row[colsDef.DATE], // formatDate(),
-        value: row[valueColumnToKeep],
+        date: row[colsDef.DATE],
+        [valueColName]: row[valueColumnToKeep],
       };
     });
-    shaped.columns = ['date', 'value'];
+    shaped.columns = ['date', valueColName];
     return shaped;
   }
   else {
@@ -100,26 +101,40 @@ function compareStats(d1, d2) {
  */
 function shapeDataForChart(data, dates, mode) {
   const shapedData = [];
+
+  /**
+   * Sets value props from a point to obj
+   */
+  function setValues(point, obj = {}) {
+    const o = obj;
+    if (!o.date && point.date) {
+      o.date = point.date;
+    }
+    for (const key in point) {
+      if (key !== 'date') {
+        o[key] = +point[key];
+      }
+    }
+    return o;
+  }
+
   // merge data points
-  data.forEach((dataset, i) => {
+  data.forEach((dataset) => {
     dataset.forEach((point) => {
       const shapedPoint = shapedData.find((x) => {
         return x.date === point.date;
       });
       if (shapedPoint) {
-        shapedPoint[`value_${i}`] = +point.value;
+        setValues(point, shapedPoint);
       }
       else {
-        shapedData.push({
-          date: point.date,
-          [`value_${i}`]: +point.value,
-        });
+        shapedData.push(setValues(point));
       }
     });
   });
 
   // get columns
-  const columns = ['date', ...data.map((set, i) => `value_${i}`)];
+  const columns = shapedData[0] ? Object.keys(shapedData[0]) : ['date'];
 
   // chronological order
   shapedData.reverse();

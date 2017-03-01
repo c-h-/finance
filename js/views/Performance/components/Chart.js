@@ -22,6 +22,8 @@ import {
   axes,
 } from 'react-stockcharts';
 
+import Tooltip from './Tooltip';
+
 // import ActionTypes from '../../../redux/action_types.json';
 
 const {
@@ -63,81 +65,6 @@ const markers = [
   ],
 ];
 
-const testData = [
-  {
-    date: new Date('2017-01-8').getTime(),
-    'value-1': +5743.25,
-  },
-  {
-    date: new Date('2017-01-10').getTime(),
-    'value-1': +5687.4,
-  },
-  {
-    date: new Date('2017-01-12').getTime(),
-    'value-1': +5604.3,
-  },
-  {
-    date: new Date('2017-01-14').getTime(),
-    'value-1': +5512.15,
-  },
-];
-
-const test2Data = [
-  {
-    'date': new Date('2017-02-20').getTime(),
-    'value_1': +119.11,
-    // 'value-2': 230,
-  },
-  {
-    'date': new Date('2017-02-21').getTime(),
-    'value_1': +118.895,
-    // 'value-2': 229.06,
-  },
-  {
-    'date': new Date('2017-02-22').getTime(),
-    'value_1': +118.74,
-    // 'value-2': 229.07,
-  },
-  {
-    'date': new Date('2017-02-23').getTime(),
-    'value_1': +118.77,
-    // 'value-2': 232,
-  },
-  {
-    'date': new Date('2017-02-24').getTime(),
-    'value_1': +117.95,
-    // 'value-2': 228.97,
-  },
-];
-
-const test3 = [
-  {
-    "date": 1484265600000,
-    "value-1": +119.11,
-    // "value-2": 230
-  },
-  {
-    "date": 1484179200000,
-    "value-1": +118.895,
-    // "value-2": 229.06
-  },
-  {
-    "date": 1484092800000,
-    "value-1": +118.74,
-    // "value-2": 229.07
-  },
-  {
-    "date": 1484006400000,
-    "value-1": +118.77,
-    // "value-2": 232
-  },
-  {
-    "date": 1483920000000,
-    "value-1": +117.95,
-    // "value-2": 228.97
-  }
-];
-
 class ChartData extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
@@ -169,7 +96,7 @@ class ChartData extends Component {
     if (!dates || !selectedChartData) {
       return <Text>Fill out the toolbar and click Compute</Text>;
     }
-    console.info('rendering', selectedChartData, test2Data);
+    // console.info('rendering', selectedChartData, test2Data);
     return (
       <View>
         <ChartCanvas
@@ -181,7 +108,7 @@ class ChartData extends Component {
             top: 10,
             bottom: 30,
           }}
-          seriesName="MSFT"
+          seriesName="Data"
           data={selectedChartData}
           type="svg"
           xAccessor={d => (d ? d.date : null)}
@@ -220,26 +147,22 @@ class ChartData extends Component {
               displayFormat={format('.2f')}
             />
             {
-              seriesCols.map((col) => {
-                return (
-                  <LineSeries
-                    yAccessor={d => d[col]}
-                  />
-                );
-              })
+              seriesCols.map(col => (
+                <LineSeries
+                  yAccessor={d => d[col]}
+                />
+              ))
             }
             {
-              seriesCols.map((col, i) => {
-                console.log('marker', markers, i % markers.length, markers[i % markers.length]);
-                return (
-                  <ScatterSeries
-                    yAccessor={d => d[col]}
-                    marker={markers[i % markers.length][0]}
-                    markerProps={markers[i % markers.length][1]}
-                  />
-                );
-              })
+              seriesCols.map((col, i) => (
+                <ScatterSeries
+                  yAccessor={d => d[col]}
+                  marker={markers[i % markers.length][0]}
+                  markerProps={markers[i % markers.length][1]}
+                />
+              ))
             }
+            <Tooltip forChart={1} origin={[-40, 0]} />
           </Chart>
           <CrossHairCursor />
         </ChartCanvas>
