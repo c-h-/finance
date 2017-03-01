@@ -20,6 +20,7 @@ import styles from '../styles';
 
 import {
   addNewComparison,
+  switchTabs,
 } from '../actions';
 
 import PerfTabPanel from './TabPanel';
@@ -44,6 +45,7 @@ class TabManager extends Component {
     const {
       tabs,
     } = this.props;
+    console.log('tab panels', tabs);
     return tabs.map(() => {
       return (
         <TabPanel>
@@ -51,6 +53,13 @@ class TabManager extends Component {
         </TabPanel>
       );
     });
+  }
+  handleTabChange = (newIndex) => {
+    const {
+      dispatch,
+      tabs,
+    } = this.props;
+    dispatch(switchTabs(tabs[newIndex].id));
   }
   handleAdd = () => {
     const {
@@ -61,7 +70,16 @@ class TabManager extends Component {
   render() {
     const {
       selectedTabID,
+      tabs,
     } = this.props;
+    let selectedTabIndex = 0;
+    for (const i in tabs) {
+      if (tabs[i].id === selectedTabID) {
+        selectedTabIndex = parseInt(i, 10);
+        break;
+      }
+    }
+    console.log(selectedTabID, selectedTabIndex);
     return (
       <View>
         <Text style={styles.Text}>
@@ -79,7 +97,7 @@ class TabManager extends Component {
             New Comparison
           </View>
         </View>
-        <Tabs onChange={this.handleTabChange} selectedTabID={selectedTabID}>
+        <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTabIndex}>
           {this.getTabs()}
           {this.getTabPanels()}
         </Tabs>

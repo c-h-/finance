@@ -68,6 +68,7 @@ class TabPanel extends Component {
     }
   }
   componentWillReceiveProps(nextProps) {
+    console.log('tabpanel', nextProps);
     const selectedComparison = nextProps.tabs.find(row => row.id === nextProps.id);
     if (
       selectedComparison
