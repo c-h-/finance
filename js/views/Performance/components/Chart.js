@@ -9,22 +9,59 @@ import {
   Text,
   View,
 } from 'react-native';
-import { timeParse } from 'd3-time-format';
+import { format } from 'd3-format';
+import { timeFormat } from 'd3-time-format';
 import { scaleTime } from 'd3-scale';
 import {
   ChartCanvas,
   Chart,
   series,
-  scale,
+  // scale,
   coordinates,
-  tooltip,
+  // tooltip,
   axes,
 } from 'react-stockcharts';
 
-const { LineSeries } = series;
-const { XAxis, YAxis } = axes;
+// import ActionTypes from '../../../redux/action_types.json';
 
-import ActionTypes from '../../../redux/action_types.json';
+const {
+  CrossHairCursor,
+  MouseCoordinateX,
+  MouseCoordinateY,
+} = coordinates;
+const {
+  LineSeries,
+  ScatterSeries,
+
+  CircleMarker,
+  SquareMarker,
+  TriangleMarker,
+} = series;
+const {
+  XAxis,
+  YAxis,
+} = axes;
+
+const markers = [
+  [
+    CircleMarker,
+    {
+      r: 3,
+    },
+  ],
+  [
+    SquareMarker,
+    {
+      width: 6,
+    },
+  ],
+  [
+    TriangleMarker,
+    {
+      width: 8,
+    },
+  ],
+];
 
 const testData = [
   {
@@ -104,6 +141,10 @@ const test3 = [
 class ChartData extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
+    width: PropTypes.number,
+  }
+  static defaultProps = {
+    width: 0,
   }
   render() {
     const {
@@ -111,6 +152,9 @@ class ChartData extends Component {
       selectedTabID,
       tabs,
     } = this.props.perfReducer;
+    const {
+      width,
+    } = this.props;
     const selectedData = tabs.find(tab => tab.id === selectedTabID);
     let dates = null;
     if (selectedData && selectedData.data) {
@@ -129,7 +173,7 @@ class ChartData extends Component {
     return (
       <View>
         <ChartCanvas
-          width={400}
+          width={width}
           height={400}
           margin={{
             left: 50,
@@ -165,6 +209,16 @@ class ChartData extends Component {
               axisAt="left"
               orient="left"
             />
+            <MouseCoordinateX
+              at="bottom"
+              orient="bottom"
+              displayFormat={timeFormat('%Y-%m-%d')}
+            />
+            <MouseCoordinateY
+              at="right"
+              orient="right"
+              displayFormat={format('.2f')}
+            />
             {
               seriesCols.map((col) => {
                 return (
@@ -174,7 +228,20 @@ class ChartData extends Component {
                 );
               })
             }
+            {
+              seriesCols.map((col, i) => {
+                console.log('marker', markers, i % markers.length, markers[i % markers.length]);
+                return (
+                  <ScatterSeries
+                    yAccessor={d => d[col]}
+                    marker={markers[i % markers.length][0]}
+                    markerProps={markers[i % markers.length][1]}
+                  />
+                );
+              })
+            }
           </Chart>
+          <CrossHairCursor />
         </ChartCanvas>
       </View>
     );
