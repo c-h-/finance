@@ -79,7 +79,6 @@ class TabManager extends Component {
         break;
       }
     }
-    console.log(selectedTabID, selectedTabIndex);
     return (
       <View>
         <Text style={styles.Text}>
