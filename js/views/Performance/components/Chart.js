@@ -22,6 +22,7 @@ import {
   axes,
 } from 'react-stockcharts';
 
+import colors from '../../../constants/colors.json';
 import Tooltip from './Tooltip';
 
 // import ActionTypes from '../../../redux/action_types.json';
@@ -65,27 +66,6 @@ const markers = [
   ],
 ];
 
-const colors = [
-  '#2ecc71',
-  '#3498db',
-  '#9b59b6',
-  '#34495e',
-  '#f1c40f',
-  '#e67e22',
-  '#e74c3c',
-  '#95a5a6',
-  '#1abc9c',
-  '#27ae60',
-  '#2980b9',
-  '#8e44ad',
-  '#2c3e50',
-  '#f39c12',
-  '#d35400',
-  '#c0392b',
-  '#7f8c8d',
-  '#16a085',
-];
-
 class ChartData extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
@@ -112,7 +92,7 @@ class ChartData extends Component {
     let seriesCols;
     if (chartData && chartData[selectedData.id] && chartData[selectedData.id].shapedData) {
       selectedChartData = chartData[selectedData.id].shapedData;
-      seriesCols = chartData[selectedData.id].columns.filter(col => col !== 'date');
+      seriesCols = chartData[selectedData.id].columns.filter(col => col !== 'date').sort();
     }
     if (!dates || !selectedChartData) {
       return <Text>Fill out the toolbar and click Compute</Text>;
@@ -169,11 +149,10 @@ class ChartData extends Component {
             />
             {
               seriesCols.map((col, i) => {
-                const color = colors[i % colors.length];
                 return (
                   <LineSeries
                     yAccessor={d => d[col]}
-                    stroke={color}
+                    stroke={colors[i % colors.length]}
                   />
                 );
               })

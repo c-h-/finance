@@ -6,6 +6,8 @@ import {
   tooltip,
 } from 'react-stockcharts';
 
+import colors from '../../../constants/colors.json';
+
 const {
   ToolTipText,
   ToolTipTSpanLabel,
@@ -42,6 +44,7 @@ class Tooltip extends Component {
     } = moreProps;
 
     const formatted = {};
+    let cols = [];
 
     if (
       currentItem
@@ -58,13 +61,19 @@ class Tooltip extends Component {
             break;
         }
       }
+      cols = Object.keys(item).filter(col => col !== 'date').sort();
     }
 
     const rendered = [];
     for (const key in formatted) {
       if (key !== 'date') {
         rendered.push(
-          <ToolTipTSpanLabel key={`label_${key}`}>{` ${key.toUpperCase()}: `}</ToolTipTSpanLabel>
+          <ToolTipTSpanLabel
+            key={`label_${key}`}
+            fill={colors[cols.indexOf(key) % colors.length] || '#333333'}
+          >
+            {` ${key.toUpperCase()}: `}
+          </ToolTipTSpanLabel>
         );
         rendered.push(
           <tspan key={`value_${key}`}>{formatted[key]}</tspan>
@@ -90,7 +99,14 @@ class Tooltip extends Component {
           fontFamily={fontFamily}
           fontSize={fontSize}
         >
-          <ToolTipTSpanLabel key="label" x={0} dy="5">Date: </ToolTipTSpanLabel>
+          <ToolTipTSpanLabel
+            key="label"
+            x={0}
+            dy="5"
+            fill="#000000"
+          >
+            {'Date: '}
+          </ToolTipTSpanLabel>
           <tspan key="value">{formatted.date}</tspan>
           {
             rendered
