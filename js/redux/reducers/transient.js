@@ -2,6 +2,7 @@ import ActionTypes from '../action_types.json';
 
 const initState = {
   appReady: false,
+  fetching: {},
 };
 
 /**
@@ -13,6 +14,35 @@ export default function transient(state = initState, action) {
       return {
         ...state,
         appReady: action.appReady,
+      };
+    }
+    case ActionTypes.SET_FETCHING: {
+      const fetchKey = action.payload.reducer;
+      const newFetchingState = {};
+      if (typeof action.payload.totalFetching === 'number') {
+        newFetchingState.totalFetching = action.payload.totalFetching > 0
+          ? action.payload.totalFetching
+          : 0;
+      }
+      if (typeof action.payload.modifier === 'number') {
+        const newQueue = state.fetching[fetchKey] && state.fetching[fetchKey].numFetching
+          ? state.fetching[fetchKey].numFetching + action.payload.modifier
+          : action.payload.modifier;
+        newFetchingState.isFetching = newQueue > 0;
+        newFetchingState.numFetching = newQueue >= 0 ? newQueue : 0;
+      }
+      else {
+        newFetchingState.isFetching = action.payload.isFetching;
+      }
+      return {
+        ...state,
+        fetching: {
+          ...state.fetching,
+          [fetchKey]: {
+            ...state.fetching[fetchKey],
+            ...newFetchingState,
+          },
+        },
       };
     }
     default:

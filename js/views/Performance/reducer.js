@@ -20,6 +20,7 @@ const initState = {
   ],
   chartData: {},
   selectedTabID: 1,
+  isFetching: false,
 };
 
 export default function perfReducer(state = initState, action) {

@@ -69,7 +69,7 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
   const toPost = action;
   delete toPost.meta; // get rid of meta so it doesn't infinite loop calling worker
   switch (action.type) {
-    case ActionTypes.FETCH_STATS: {
+    case ActionTypes.FETCH_REMOTE: {
       // by the time we get here we're sure we need to fetch the URLs
       // if not, it would have been cancelled by cache
       recurseThroughRequests(action.payload.urls, action.payload.apiType);

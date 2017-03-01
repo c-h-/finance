@@ -5,6 +5,9 @@ import {
   chartModes,
 } from '../constants/misc.json';
 import transStructure from '../constants/transactionStructure.json';
+import {
+  setFetching,
+} from '../views/Performance/actions';
 
 const dispatch = self.postMessage;
 
@@ -370,6 +373,7 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
           data: shapeDataForChart(action.payload),
         },
       });
+      dispatch(setFetching(-1));
       break;
     }
     default:

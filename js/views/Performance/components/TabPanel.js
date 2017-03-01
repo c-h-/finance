@@ -20,8 +20,9 @@ import styles from '../styles';
 
 import parseDate from '../../../utils/parseDate';
 import {
-  saveComparison,
   fetchUpdatedStats,
+  saveComparison,
+  setFetching,
 } from '../actions';
 import ChartContainer from './ChartContainer';
 
@@ -31,6 +32,7 @@ import symbolTypes from '../../../constants/symbolTypes.json';
 const {
   Popover,
   PopoverInteractionKind,
+  ProgressBar,
 } = Blueprint;
 
 const modes = misc.chartModes;
@@ -47,6 +49,8 @@ class TabPanel extends Component {
     rows: PropTypes.array,
     dispatch: PropTypes.func,
     id: PropTypes.number,
+    numFetching: PropTypes.number,
+    totalFetching: PropTypes.number,
   }
   state = {
     selectedSymbols: '',
@@ -153,6 +157,10 @@ class TabPanel extends Component {
       isOpen,
       mode,
     } = this.state;
+    const {
+      numFetching,
+      totalFetching,
+    } = this.props;
     const date1Valid = dates[0] && typeof dates[0] === 'object';
     const date2Valid = dates[1] && typeof dates[1] === 'object';
     let toRender = <Text>Tap to select date range</Text>;
@@ -252,6 +260,25 @@ class TabPanel extends Component {
             Compute
           </View>
         </View>
+        {
+          numFetching > 0 &&
+          <View style={{ position: 'relative' }}>
+            <View
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                zIndex: 1,
+              }}
+            >
+              <ProgressBar
+                intent={Blueprint.Intent.PRIMARY}
+                value={1 - (numFetching / totalFetching)}
+              />
+            </View>
+          </View>
+        }
         <ChartContainer />
       </View>
     );
@@ -263,6 +290,18 @@ function mapStateToProps(state) {
     tabs: state.perfReducer.tabs || [],
     rows: state.portfolios.rows || [],
     id: state.perfReducer.selectedTabID,
+    numFetching: state.transient
+      && state.transient.fetching
+      && state.transient.fetching.perfReducer
+      && typeof state.transient.fetching.perfReducer.numFetching === 'number'
+      ? state.transient.fetching.perfReducer.numFetching
+      : 0,
+    totalFetching: state.transient
+      && state.transient.fetching
+      && state.transient.fetching.perfReducer
+      && typeof state.transient.fetching.perfReducer.totalFetching === 'number'
+      ? state.transient.fetching.perfReducer.totalFetching
+      : 0,
   };
 }
 

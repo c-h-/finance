@@ -1,4 +1,7 @@
 import checkCacheKeys from '../../utils/checkCacheKeys';
+import {
+  setFetching,
+} from '../../views/Performance/actions';
 
 import ActionTypes from '../action_types.json';
 
@@ -27,12 +30,19 @@ export default function (store) {
 
           if (misses.length) {
             action.payload.urls = misses;
-            return next(action);
+            next(setFetching(misses.length, misses.length));
+            return next({
+              ...action,
+              type: ActionTypes.FETCH_REMOTE,
+            });
           }
-          console.warn('All requests were cached so shaping started right away');
-          return next({
-            type: ActionTypes.START_CHART_UPDATE_FLOW,
-          }); // everything was cached, don't grab anything
+          else {
+            // everything was cached, don't grab anything
+            next(setFetching(1, 1));
+            return next({
+              type: ActionTypes.START_CHART_UPDATE_FLOW,
+            });
+          }
         }
         default:
           return null;
