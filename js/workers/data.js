@@ -2,6 +2,7 @@ import ActionTypes from '../redux/action_types.json';
 import getSymbols from '../utils/getSymbols';
 import {
   SYM_DELIMETER,
+  chartModes,
 } from '../constants/misc.json';
 import transStructure from '../constants/transactionStructure.json';
 
@@ -223,10 +224,14 @@ function normalizeData(data) {
 }
 
 /**
- * Shapes data for a chart to display
+ * Takes normalized data and processes
  */
-function shapeDataForChart(data, dates, mode, symbols, transactions, portfolios) {
-  const normalizedData = normalizeData(data, dates);
+function processPortfolios(normalizedData, payload) {
+  const {
+    symbols,
+    transactions,
+    portfolios,
+  } = payload;
   const symbolWhitelist = ['date'];
   symbols.forEach((group) => {
     if (group.indexOf(SYM_DELIMETER) > -1) {
@@ -286,17 +291,58 @@ function shapeDataForChart(data, dates, mode, symbols, transactions, portfolios)
     }
   });
 
-  // console.log('normalizedData', normalizedData);
+  return symbolWhitelist;
+}
 
-  // const applyTransformations(normalizeData, symbols, transactions);
+/**
+ * Converts comparison mode data into summed mode data
+ */
+function applySummingMode(normalizedData) {
+  normalizedData.shapedData.forEach((point) => {
+    const p = point;
+    let acc = 0;
+    for (const key in point) {
+      if (key !== 'date' && point[key]) {
+        acc += p[key];
+        delete p[key];
+      }
+    }
+    p.Value = acc;
+  });
+  return ['date', 'Value'];
+}
+
+/**
+ * Shapes data for a chart to display
+ */
+function shapeDataForChart(payload) {
+  const {
+    data,
+    dates,
+    mode,
+  } = payload;
+
+  // normalize data for charting
+  const normalizedData = normalizeData(data, dates);
+
+  // process raw symbols for portfolio values
+  // processes normalizedData *in place*
+  let columns = processPortfolios(normalizedData, payload);
+
+  // sum our series into a single one if we're in summing mode
+  if (mode === chartModes.SUM) {
+    columns = applySummingMode(normalizedData);
+  }
 
   return {
     shapedData: normalizedData.shapedData,
-    columns: symbolWhitelist,
+    columns,
   };
 }
 
-// process data
+/**
+ * Data processing toolchain
+ */
 self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant action object.
   const toPost = action;
   delete toPost.meta; // get rid of meta so it doesn't infinite loop calling worker
@@ -321,14 +367,7 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
         type: ActionTypes.STORE_CHART_DATA,
         payload: {
           id: action.payload.id,
-          data: shapeDataForChart(
-            action.payload.data,
-            action.payload.dates,
-            action.payload.mode,
-            action.payload.symbols,
-            action.payload.transactions,
-            action.payload.portfolios
-          ),
+          data: shapeDataForChart(action.payload),
         },
       });
       break;

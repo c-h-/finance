@@ -62,7 +62,9 @@ function recurseThroughRequests(urls, apiType) {
   });
 }
 
-// run networking in worker
+/**
+ * Networking toolchain
+ */
 self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant action object.
   const toPost = action;
   delete toPost.meta; // get rid of meta so it doesn't infinite loop calling worker

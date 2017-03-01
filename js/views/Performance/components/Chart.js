@@ -33,6 +33,7 @@ const {
   MouseCoordinateY,
 } = coordinates;
 const {
+  AreaSeries,
   LineSeries,
   ScatterSeries,
 
@@ -148,7 +149,12 @@ class ChartData extends Component {
               displayFormat={format('.2f')}
             />
             {
-              seriesCols.map((col, i) => {
+              seriesCols.length === 1
+              && <AreaSeries yAccessor={d => d[seriesCols[0]]} />
+            }
+            {
+              seriesCols.length !== 1
+              && seriesCols.map((col, i) => {
                 return (
                   <LineSeries
                     yAccessor={d => d[col]}
@@ -158,7 +164,8 @@ class ChartData extends Component {
               })
             }
             {
-              seriesCols.map((col, i) => {
+              seriesCols.length !== 1
+              && seriesCols.map((col, i) => {
                 const color = colors[i % colors.length];
                 return (
                   <ScatterSeries

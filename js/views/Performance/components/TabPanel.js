@@ -33,10 +33,7 @@ const {
   PopoverInteractionKind,
 } = Blueprint;
 
-const modes = {
-  SUM: 0,
-  COMPARE: 1,
-};
+const modes = misc.chartModes;
 
 const DELIMITER = misc.DELIMITER;
 
