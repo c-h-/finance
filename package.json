@@ -29,6 +29,7 @@
     "d3-time-format": "^2.0.3",
     "express": "^4.14.1",
     "immutability-helper": "^2.1.2",
+    "lodash.clonedeep": "^4.5.0",
     "nodemon": "^1.11.0",
     "offline-plugin": "^4.6.1",
     "react": "~15.4.0",

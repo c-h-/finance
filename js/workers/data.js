@@ -1,4 +1,9 @@
 import ActionTypes from '../redux/action_types.json';
+import getSymbols from '../utils/getSymbols';
+import {
+  SYM_DELIMETER,
+} from '../constants/misc.json';
+import transStructure from '../constants/transactionStructure.json';
 
 const dispatch = self.postMessage;
 
@@ -62,6 +67,7 @@ function shapeResponse(data) {
 /**
  * gets stats from a date
  */
+/*
 function getStats(date) {
   const d = date instanceof Date ? date : new Date(date);
   return {
@@ -70,6 +76,7 @@ function getStats(date) {
     d: d.getUTCDate(),
   };
 }
+*/
 
 /**
  * Compares 2 date stats.
@@ -77,6 +84,7 @@ function getStats(date) {
  * Returns 1 if d1 is more recent than d2
  * Returns -1 if d1 is more stale than d2
  */
+/*
 function compareStats(d1, d2) {
   if (d1.y === d2.y) {
     if (d1.m === d2.m) {
@@ -95,6 +103,7 @@ function compareStats(d1, d2) {
     return d1.y > d2.y ? 1 : -1;
   }
 }
+*/
 
 /**
  * Unused function for making sure there's a data point for every point in time.
@@ -154,26 +163,26 @@ function ensureDataPointForEveryPointInTime(dates, shapedData, columns) {
 */
 
 /**
- * Shapes data for a chart to display
+ * Sets value props from a point to obj
  */
-function shapeDataForChart(data, dates, mode) {
-  const shapedData = [];
-
-  /**
-   * Sets value props from a point to obj
-   */
-  function setValues(point, obj = {}) {
-    const o = obj;
-    if (!o.date && point.date) {
-      o.date = point.date;
-    }
-    for (const key in point) {
-      if (key !== 'date') {
-        o[key] = +point[key];
-      }
-    }
-    return o;
+function setValues(point, obj = {}) {
+  const o = obj;
+  if (!o.date && point.date) {
+    o.date = point.date;
   }
+  for (const key in point) {
+    if (key !== 'date') {
+      o[key] = +point[key];
+    }
+  }
+  return o;
+}
+
+/**
+ * Prepares api data for charting display
+ */
+function normalizeData(data) {
+  const shapedData = [];
 
   // merge data points
   data.forEach((dataset) => {
@@ -196,6 +205,8 @@ function shapeDataForChart(data, dates, mode) {
   // chronological order
   shapedData.reverse();
 
+  // unneccessary
+  // ensureDataPointForEveryPointInTime();
 
   // convert to all ms time
   shapedData.forEach((p) => {
@@ -206,8 +217,82 @@ function shapeDataForChart(data, dates, mode) {
   });
 
   return {
-    shapedData,
     columns,
+    shapedData,
+  };
+}
+
+/**
+ * Shapes data for a chart to display
+ */
+function shapeDataForChart(data, dates, mode, symbols, transactions, portfolios) {
+  const normalizedData = normalizeData(data, dates);
+  const symbolWhitelist = ['date'];
+  symbols.forEach((group) => {
+    if (group.indexOf(SYM_DELIMETER) > -1) {
+      // looking at a portfolio
+      // need to calculate when values are positive and accumulate those sums.
+      // once we have sums for every data point, add a new key to normalizedData.shapedData
+      // for the portfolio
+      const portfolioSymbols = getSymbols([group], transactions);
+      const portfolioName = portfolios.find((port) => {
+        return port.id === parseInt(group.split(SYM_DELIMETER)[1], 10);
+      }).name;
+      // make sure we don't delete the portfolio
+      symbolWhitelist.push(portfolioName);
+      normalizedData.shapedData.forEach((point) => {
+        let portfolioValue = 0;
+        portfolioSymbols.forEach((symbol) => {
+          // for each symbol, grab the value at the point and then apply portfolio transaction
+          // transformations to the value
+          const symbolTransactions = transactions.filter((trans) => {
+            return trans[transStructure.SYMBOL].toUpperCase() === symbol;
+          }).sort((a, b) => a[transStructure.DATE] - b[transStructure.DATE]);
+
+          // the shares owned at this point's date for the portfolio
+          const sharesAtDate = symbolTransactions.filter((trans) => {
+            return trans[transStructure.DATE] <= point.date;
+          }).reduce((acc, curr) => {
+            return curr[transStructure.SHARES]
+              ? acc + parseFloat(curr[transStructure.SHARES])
+              : acc;
+          }, 0);
+
+          // add the shares' value to the portfolio's value
+          portfolioValue += point[symbol]
+            ? parseFloat((point[symbol] * sharesAtDate).toFixed(2))
+            : 0;
+        });
+
+        // add the portfolio's datapoint
+        const p = point;
+        p[portfolioName] = portfolioValue;
+      });
+    }
+    else {
+      // looking at a basic symbol
+      symbolWhitelist.push(group.toUpperCase());
+    }
+  });
+
+  // remove unused basic symbols from normalizedData
+  // do this before adding more data to normalizedData
+  normalizedData.shapedData.forEach((point) => {
+    for (const key in point) {
+      const p = point;
+      if (symbolWhitelist.indexOf(key) === -1) {
+        delete p[key];
+      }
+    }
+  });
+
+  // console.log('normalizedData', normalizedData);
+
+  // const applyTransformations(normalizeData, symbols, transactions);
+
+  return {
+    shapedData: normalizedData.shapedData,
+    columns: symbolWhitelist,
   };
 }
 
@@ -239,7 +324,10 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
           data: shapeDataForChart(
             action.payload.data,
             action.payload.dates,
-            action.payload.mode
+            action.payload.mode,
+            action.payload.symbols,
+            action.payload.transactions,
+            action.payload.portfolios
           ),
         },
       });

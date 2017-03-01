@@ -50,9 +50,12 @@ export default function (store) {
               type: ActionTypes.SHAPE_CHART_DATA,
               payload: {
                 data: cacheEntriesToShape,
-                mode: selectedTab.data.mode,
                 id: selectedTab.id,
                 dates: selectedTab.data.dates,
+                mode: selectedTab.data.mode,
+                transactions: portfolios.transactions,
+                portfolios: portfolios.rows,
+                symbols,
               },
               meta: {
                 WebWorker: true,

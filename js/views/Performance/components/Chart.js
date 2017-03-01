@@ -126,7 +126,7 @@ class ChartData extends Component {
           margin={{
             left: 50,
             right: 50,
-            top: 10,
+            top: 30,
             bottom: 30,
           }}
           seriesName="Data"
@@ -194,7 +194,7 @@ class ChartData extends Component {
                 );
               })
             }
-            <Tooltip forChart={1} origin={[40, 0]} />
+            <Tooltip forChart={1} origin={[40, -20]} />
           </Chart>
           <CrossHairCursor />
         </ChartCanvas>

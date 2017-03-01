@@ -3,7 +3,19 @@ import transStructure from '../constants/transactionStructure.json';
 import misc from '../constants/misc.json';
 
 /**
- * Get symbols from a list
+ * Get unique values from array back
+ */
+function uniq(a) {
+  const seen = {};
+  return a.filter((item) => {
+    return seen.hasOwnProperty(item) // eslint-disable-line no-prototype-builtins
+      ? false
+      : (seen[item] = true);
+  });
+}
+
+/**
+ * Flattens an array of symbols from mixed types to just basic symbols
  */
 export default function getSymbols(symbols = [], transactions = []) {
   const newSymbols = [];
@@ -32,5 +44,5 @@ export default function getSymbols(symbols = [], transactions = []) {
       newSymbols.push(symbols[i].toUpperCase());
     }
   }
-  return newSymbols;
+  return uniq(newSymbols);
 }
