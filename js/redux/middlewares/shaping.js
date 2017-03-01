@@ -43,7 +43,7 @@ export default function (store) {
             settings.quandl
           ) || []);
           const misses = checkCacheKeys(keys, currentCacheKeys);
-          if (!misses.length) {
+          if (misses.length < keys.length) {
             const cacheEntriesToShape = keys.map(key => cache[hash(key)]);
             // make sure cache is full for our needed symbols
             return next({
@@ -63,7 +63,7 @@ export default function (store) {
             });
           }
           else {
-            console.warn('Not shaping chart data because we are missing hash keys');
+            console.warn('Not shaping chart data because we are missing all hash keys');
             return null;
           }
         }
