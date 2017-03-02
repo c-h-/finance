@@ -6,7 +6,7 @@ import {
 
 import styles from './styles';
 
-const Hello = (props) => {
+const Hello = () => {
   return (
     <View style={styles.container}>
       <View className="pt-card pt-elevation-2">
@@ -14,6 +14,24 @@ const Hello = (props) => {
         <Text style={styles.Text}>Welcome to Simple Portfolio Tracker.</Text>
         <Text style={styles.Text}>
           {'I built Simple Portfolio Tracker to show me my assets\' values in one simple place.'}
+        </Text>
+        <Text style={styles.Text} />
+
+        <h3>Private, Secure, and Open-Source</h3>
+        <Text style={styles.Text}>Your finances are your business only. This app never sends your
+          financial data anywhere. Keep in mind this means that if you clear your browser, your data
+          is gone irrecoverably. Export and back up regularly.
+        </Text>
+        <Text style={styles.Text}>The only data sent to servers from the app is anonymous usage data
+          to help with planning features and gauging usage, as well as anonymous data about any
+          errors that happen while using the app, so that bugs can be discovered, prioritized,
+          and fixed.
+        </Text>
+        <Text style={styles.Text}>{'You can review, verify, and contribute to this app\'s codebase '
+          + 'via the GitHub repository.'}
+        </Text>
+        <Text style={styles.Text}>Coming soon: data saved by this app is encrypted locally using
+          AES encryption.
         </Text>
         <Text style={styles.Text} />
 
