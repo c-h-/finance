@@ -30,7 +30,13 @@ export default function (store) {
 
           if (misses.length) {
             action.payload.urls = misses;
+            // set fetching statuses
             next(setFetching(misses.length, misses.length));
+            // build partial chart from cached resources
+            next({
+              type: ActionTypes.START_CHART_UPDATE_FLOW,
+            });
+            // get api resources from remote
             return next({
               ...action,
               type: ActionTypes.FETCH_REMOTE,
@@ -38,7 +44,9 @@ export default function (store) {
           }
           else {
             // everything was cached, don't grab anything
+            // set fetching to 1 so that loader shows until update flow completes
             next(setFetching(1, 1));
+            // build chart from completed data
             return next({
               type: ActionTypes.START_CHART_UPDATE_FLOW,
             });

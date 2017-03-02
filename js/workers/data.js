@@ -190,17 +190,19 @@ function normalizeData(data) {
 
   // merge data points
   data.forEach((dataset) => {
-    dataset.forEach((point) => {
-      const shapedPoint = shapedData.find((x) => {
-        return x.date === point.date;
+    if (dataset) {
+      dataset.forEach((point) => {
+        const shapedPoint = shapedData.find((x) => {
+          return x.date === point.date;
+        });
+        if (shapedPoint) {
+          setValues(point, shapedPoint);
+        }
+        else {
+          shapedData.push(setValues(point));
+        }
       });
-      if (shapedPoint) {
-        setValues(point, shapedPoint);
-      }
-      else {
-        shapedData.push(setValues(point));
-      }
-    });
+    }
   });
 
   // get columns
@@ -236,6 +238,7 @@ function processPortfolios(normalizedData, payload) {
     portfolios,
   } = payload;
   const symbolWhitelist = ['date'];
+
   symbols.forEach((group) => {
     if (group.indexOf(SYM_DELIMETER) > -1) {
       // looking at a portfolio
@@ -248,7 +251,8 @@ function processPortfolios(normalizedData, payload) {
       }).name;
       // make sure we don't delete the portfolio
       symbolWhitelist.push(portfolioName);
-      normalizedData.shapedData.forEach((point) => {
+
+      normalizedData.shapedData.forEach((point, _i) => {
         let portfolioValue = 0;
         portfolioSymbols.forEach((symbol) => {
           // for each symbol, grab the value at the point and then apply portfolio transaction
@@ -257,19 +261,36 @@ function processPortfolios(normalizedData, payload) {
             return trans[transStructure.SYMBOL].toUpperCase() === symbol;
           }).sort((a, b) => a[transStructure.DATE] - b[transStructure.DATE]);
 
-          // the shares owned at this point's date for the portfolio
-          const sharesAtDate = symbolTransactions.filter((trans) => {
-            return trans[transStructure.DATE] <= point.date;
-          }).reduce((acc, curr) => {
-            return curr[transStructure.SHARES]
-              ? acc + parseFloat(curr[transStructure.SHARES])
-              : acc;
-          }, 0);
+          if (symbol === 'USD') {
+            // special case for cash
+            const amountAtDate = symbolTransactions.filter((trans) => {
+              return trans[transStructure.DATE] <= point.date;
+            }).reduce((acc, curr) => {
+              return curr[transStructure.AMOUNT]
+                ? acc + parseFloat(curr[transStructure.AMOUNT])
+                : acc;
+            }, 0);
 
-          // add the shares' value to the portfolio's value
-          portfolioValue += point[symbol]
-            ? parseFloat((point[symbol] * sharesAtDate).toFixed(2))
-            : 0;
+            // add the cash value to the portfolio's value
+            portfolioValue += amountAtDate
+              ? parseFloat(amountAtDate.toFixed(2))
+              : 0;
+          }
+          else {
+            // the shares owned at this point's date for the portfolio
+            const sharesAtDate = symbolTransactions.filter((trans) => {
+              return trans[transStructure.DATE] <= point.date;
+            }).reduce((acc, curr) => {
+              return curr[transStructure.SHARES]
+                ? acc + parseFloat(curr[transStructure.SHARES])
+                : acc;
+            }, 0);
+
+            // add the shares' value to the portfolio's value
+            portfolioValue += point[symbol]
+              ? parseFloat((point[symbol] * sharesAtDate).toFixed(2))
+              : 0;
+          }
         });
 
         // add the portfolio's datapoint
@@ -321,12 +342,11 @@ function applySummingMode(normalizedData) {
 function shapeDataForChart(payload) {
   const {
     data,
-    dates,
     mode,
   } = payload;
 
   // normalize data for charting
-  const normalizedData = normalizeData(data, dates);
+  const normalizedData = normalizeData(data);
 
   // process raw symbols for portfolio values
   // processes normalizedData *in place*

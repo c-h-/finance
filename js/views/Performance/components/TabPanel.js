@@ -22,7 +22,6 @@ import parseDate from '../../../utils/parseDate';
 import {
   fetchUpdatedStats,
   saveComparison,
-  setFetching,
 } from '../actions';
 import ChartContainer from './ChartContainer';
 

@@ -30,7 +30,6 @@ export function saveComparison(id, newState) {
  * Set fetching
  */
 export function setFetching(modifier = 0, totalFetching) {
-  console.log('Setting SET_FETCHING', modifier, totalFetching);
   return {
     type: ActionTypes.SET_FETCHING,
     payload: {
