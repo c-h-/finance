@@ -40,7 +40,8 @@ function encodeQueryData(data) {
 function getDatabaseCode(symbol) {
   switch (symbol) {
     case 'BTC':
-      return 'BAVERAGE';
+    case 'ETH':
+      return 'BITFINEX';
     default:
       return 'WIKI';
   }
@@ -52,7 +53,8 @@ function getDatabaseCode(symbol) {
 function getDatasetCode(symbol) {
   switch (symbol) {
     case 'BTC':
-      return 'USD';
+    case 'ETH':
+      return `${symbol}USD`;
     default:
       return symbol.toUpperCase();
   }

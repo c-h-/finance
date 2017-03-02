@@ -250,8 +250,9 @@ function processPortfolios(normalizedData, payload) {
       // once we have sums for every data point, add a new key to normalizedData.shapedData
       // for the portfolio
       const portfolioSymbols = getSymbols([group], transactions);
+      const portfolioID = parseInt(group.split(SYM_DELIMETER)[1], 10);
       const portfolioName = portfolios.find((port) => {
-        return port.id === parseInt(group.split(SYM_DELIMETER)[1], 10);
+        return port.id === portfolioID;
       }).name;
       // make sure we don't delete the portfolio
       symbolWhitelist.push(portfolioName);
@@ -262,14 +263,14 @@ function processPortfolios(normalizedData, payload) {
           // for each symbol, grab the value at the point and then apply portfolio transaction
           // transformations to the value
           const symbolTransactions = transactions.filter((trans) => {
-            return trans[transStructure.SYMBOL].toUpperCase() === symbol;
+            return trans[transStructure.SYMBOL].toUpperCase() === symbol
+              && trans[transStructure.PID] === portfolioID
+              && trans[transStructure.DATE] <= point.date;
           }).sort((a, b) => a[transStructure.DATE] - b[transStructure.DATE]);
 
           if (CURRENCIES.indexOf(symbol) > -1) {
             // process currency
-            const amountAtDate = symbolTransactions.filter((trans) => {
-              return trans[transStructure.DATE] <= point.date;
-            }).reduce((acc, curr) => {
+            const amountAtDate = symbolTransactions.reduce((acc, curr) => {
               return curr[transStructure.AMOUNT]
                 ? acc + parseFloat(curr[transStructure.AMOUNT])
                 : acc;
@@ -283,16 +284,15 @@ function processPortfolios(normalizedData, payload) {
             portfolioValue += amountAtDate
               ? parseFloat((multiplier * amountAtDate).toFixed(2))
               : 0;
-            // if (_i === normalizedData.shapedData.length - 1) {
-            //   console.log('symbol', symbol, amountAtDate, multiplier, point[symbol], portfolioValue);
-            // }
+            if (_i === normalizedData.shapedData.length - 1) {
+              console.log('symbol', symbol, symbolTransactions, amountAtDate,
+                multiplier, point[symbol], portfolioValue);
+            }
           }
           else {
             // process equity
             // the shares owned at this point's date for the portfolio
-            const sharesAtDate = symbolTransactions.filter((trans) => {
-              return trans[transStructure.DATE] <= point.date;
-            }).reduce((acc, curr) => {
+            const sharesAtDate = symbolTransactions.reduce((acc, curr) => {
               return curr[transStructure.SHARES]
                 ? acc + parseFloat(curr[transStructure.SHARES])
                 : acc;
