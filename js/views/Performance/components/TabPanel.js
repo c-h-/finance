@@ -187,17 +187,14 @@ class TabPanel extends Component {
 
     return (
       <View>
-        <Text style={styles.Text}>
-          Select portfolios and/or symbols to compare performance here.
-        </Text>
         <View
           role="navigation"
-          className="pt-navbar"
           style={styles.toolbarContainer}
         >
           <View
-            style={styles.SelectContainer}
+            style={[styles.SelectContainer, styles.toolbarChild]}
           >
+            <Text style={styles.Text}>Symbols and/or Portfolios</Text>
             <Select
               options={this.getPortfolios()}
               value={selectedSymbols}
@@ -212,44 +209,49 @@ class TabPanel extends Component {
               multi
             />
           </View>
-          <Popover
-            content={
-              <DateRangePicker
-                value={dates}
-                onChange={this.handleDateChange}
-                maxDate={now}
-                allowSingleDayRange
-              />
-            }
-            interactionKind={PopoverInteractionKind.CLICK}
-            onClose={this.closePopover}
-            onInteraction={this.openPopover}
-            isOpen={isOpen}
-            position={Blueprint.Position.BOTTOM}
-          >
-            <View
-              role="button"
-              className="pt-button"
-              style={styles.button}
+          <View style={styles.toolbarChild}>
+            <Text style={styles.Text}>Date Range</Text>
+            <Popover
+              content={
+                <DateRangePicker
+                  value={dates}
+                  onChange={this.handleDateChange}
+                  maxDate={now}
+                  allowSingleDayRange={false}
+                />
+              }
+              interactionKind={PopoverInteractionKind.CLICK}
+              onClose={this.closePopover}
+              onInteraction={this.openPopover}
+              isOpen={isOpen}
+              position={Blueprint.Position.BOTTOM}
             >
-              {toRender}
-            </View>
-          </Popover>
-          <select
-            onChange={this.handleModeChange}
-            value={mode}
-            style={{
-              borderColor: '#999',
-              borderWidth: 1,
-              borderStyle: 'solid',
-              marginLeft: 10,
-              padding: '4px 8px',
-            }}
-          >
-            <option value={modes.SUM}>Sum</option>
-            <option value={modes.COMPARE}>Compare</option>
-          </select>
-          <View className="pt-navbar-divider" />
+              <View
+                role="button"
+                className="pt-button"
+                style={styles.button}
+              >
+                {toRender}
+              </View>
+            </Popover>
+          </View>
+          <View style={styles.toolbarChild}>
+            <Text style={styles.Text}>Chart Mode</Text>
+            <select
+              onChange={this.handleModeChange}
+              value={mode}
+              style={{
+                borderColor: '#999',
+                borderWidth: 1,
+                borderStyle: 'solid',
+                padding: '4px 8px',
+                height: 35,
+              }}
+            >
+              <option value={modes.SUM}>Sum</option>
+              <option value={modes.COMPARE}>Compare</option>
+            </select>
+          </View>
           <View
             role="button"
             className="pt-button pt-button-primary"

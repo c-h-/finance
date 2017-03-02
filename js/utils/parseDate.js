@@ -3,18 +3,18 @@ export default function (date) {
   const month = date.getMonth();
   const year = date.getFullYear();
   const months = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan.',
+    'Feb.',
+    'Mar.',
+    'Apr.',
     'May',
     'June',
     'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Aug.',
+    'Sept.',
+    'Oct.',
+    'Nov.',
+    'Dec.',
   ];
   return `${months[month]} ${day}, ${year}`;
 }

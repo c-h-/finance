@@ -3,6 +3,9 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  emptyContainer: {
+    marginVertical: 40,
+  },
   container: {
     flexGrow: 1,
     padding: 20,
@@ -14,7 +17,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   button: {
-    // marginBottom: 10,
+    height: 35,
   },
   Text: {
     marginBottom: 10,
@@ -29,10 +32,14 @@ const styles = StyleSheet.create({
   },
   toolbarContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-end',
+    padding: 15,
+    height: 'auto',
+  },
+  toolbarChild: {
+    marginRight: 30,
   },
   SelectContainer: {
-    marginRight: 10,
     flexGrow: 1,
   },
 });

@@ -9,6 +9,9 @@ import {
   Text,
   View,
 } from 'react-native';
+import {
+  NonIdealState,
+} from '@blueprintjs/core';
 import { format } from 'd3-format';
 import { timeFormat } from 'd3-time-format';
 import { scaleTime } from 'd3-scale';
@@ -22,6 +25,7 @@ import {
   axes,
 } from 'react-stockcharts';
 
+import styles from '../styles';
 import colors from '../../../constants/colors.json';
 import Tooltip from './Tooltip';
 
@@ -96,7 +100,15 @@ class ChartData extends Component {
       seriesCols = chartData[selectedData.id].columns.filter(col => col !== 'date').sort();
     }
     if (!dates || !selectedChartData || selectedChartData.length === 0) {
-      return <Text>Fill out the toolbar and click Compute</Text>;
+      return (
+        <View style={styles.emptyContainer}>
+          <NonIdealState
+            title="No data"
+            description="Fill out the controls and click Compute to show a chart"
+            visual="hand-up"
+          />
+        </View>
+      );
     }
     // console.info('rendering', selectedChartData);
     return (
