@@ -38,3 +38,16 @@ export function editTransaction(rowId, col, edit) {
     },
   };
 }
+
+/**
+ * Switch between perf tabs
+ */
+export function switchTabs(portfolioID) {
+  return {
+    type: ActionTypes.SWITCH_TABS,
+    payload: {
+      selectedTabID: portfolioID,
+      reducer: 'portfolios',
+    },
+  };
+}

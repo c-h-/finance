@@ -98,7 +98,7 @@ class ChartData extends Component {
     if (!dates || !selectedChartData || selectedChartData.length === 0) {
       return <Text>Fill out the toolbar and click Compute</Text>;
     }
-    // console.info('rendering', selectedChartData, test2Data);
+    // console.info('rendering', selectedChartData);
     return (
       <View>
         <ChartCanvas

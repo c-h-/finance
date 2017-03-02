@@ -48,6 +48,7 @@ export function switchTabs(selectedTabID) {
     type: ActionTypes.SWITCH_TABS,
     payload: {
       selectedTabID,
+      reducer: 'perfReducer',
     },
   };
 }

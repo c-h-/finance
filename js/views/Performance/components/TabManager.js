@@ -45,7 +45,6 @@ class TabManager extends Component {
     const {
       tabs,
     } = this.props;
-    console.log('tab panels', tabs);
     return tabs.map(() => {
       return (
         <TabPanel>

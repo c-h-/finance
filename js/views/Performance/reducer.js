@@ -32,10 +32,13 @@ export default function perfReducer(state = initState, action) {
       };
     }
     case ActionTypes.SWITCH_TABS: {
-      return {
-        ...state,
-        selectedTabID: action.payload.selectedTabID,
-      };
+      if (action.payload.reducer === 'perfReducer') {
+        return {
+          ...state,
+          selectedTabID: action.payload.selectedTabID,
+        };
+      }
+      return state;
     }
     case ActionTypes.STORE_CHART_DATA: {
       return {

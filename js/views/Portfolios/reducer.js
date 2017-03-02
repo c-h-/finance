@@ -19,6 +19,7 @@ const initState = {
     },
   ],
   transactions: [],
+  selectedTabID: 1,
 };
 
 export default function portfolios(state = initState, action) {
@@ -45,6 +46,15 @@ export default function portfolios(state = initState, action) {
           },
         ],
       };
+    }
+    case ActionTypes.SWITCH_TABS: {
+      if (action.payload.reducer === 'portfolios') {
+        return {
+          ...state,
+          selectedTabID: action.payload.selectedTabID,
+        };
+      }
+      return state;
     }
     case ActionTypes.ADD_TRANSACTION: {
       const {

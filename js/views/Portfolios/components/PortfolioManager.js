@@ -25,6 +25,7 @@ import styles from '../styles';
 
 import {
   addPortfolio,
+  switchTabs,
 } from '../actions';
 
 import PortfolioEditor from './PortfolioEditor';
@@ -33,6 +34,7 @@ class PortfolioManager extends Component {
   static propTypes = {
     rows: PropTypes.array,
     dispatch: PropTypes.func,
+    selectedTabID: PropTypes.number,
   }
   state = {
     portfolioName: '',
@@ -90,11 +92,29 @@ class PortfolioManager extends Component {
       isOpen: false,
     });
   }
+  handleTabChange = (newIndex) => {
+    const {
+      dispatch,
+      rows,
+    } = this.props;
+    dispatch(switchTabs(rows[newIndex].id));
+  }
   render() {
     const {
       portfolioName,
       isOpen,
     } = this.state;
+    const {
+      rows,
+      selectedTabID,
+    } = this.props;
+    let selectedTabIndex = 0;
+    for (const i in rows) {
+      if (rows[i].id === selectedTabID) {
+        selectedTabIndex = parseInt(i, 10);
+        break;
+      }
+    }
     const addPortfolioPopoverContent = (
       <View className="pt-card">
         <Text>Name</Text>
@@ -141,7 +161,7 @@ class PortfolioManager extends Component {
             </View>
           </Popover>
         </View>
-        <Tabs>
+        <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTabIndex}>
           {this.getTabs()}
           {this.getTabPanels()}
         </Tabs>
@@ -153,6 +173,7 @@ class PortfolioManager extends Component {
 function mapStateToProps(state) {
   return {
     rows: state.portfolios.rows || [],
+    selectedTabID: state.portfolios.selectedTabID,
   };
 }
 
