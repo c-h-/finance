@@ -4,11 +4,14 @@ import React, {
 import {
   connect,
 } from 'react-redux';
+import { FocusStyleManager } from '@blueprintjs/core';
 
 import '../libs';
 
 import AppNavigator from './AppNavigator';
 import URIWrapper from './URIWrapper';
+
+FocusStyleManager.onlyShowFocusOnTabs();
 
 const NavigationWrappedApp = URIWrapper(AppNavigator);
 

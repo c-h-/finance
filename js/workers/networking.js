@@ -1,6 +1,19 @@
 import ActionTypes from '../redux/action_types.json';
+import {
+  setFetching,
+} from '../views/Performance/actions';
 
 const dispatch = self.postMessage;
+
+function err(e) {
+  dispatch({
+    type: ActionTypes.ERROR,
+    payload: {
+      msg: e,
+    },
+  });
+  dispatch(setFetching(-1));
+}
 
 /**
  * Gets a URLs contents
@@ -16,9 +29,14 @@ function getURLContents(url, options) {
       ...options,
     };
     fetch(url, opts)
-      .then(response => response.json(), reject)
+      .then((response) => {
+        if (!response.ok) {
+          reject(response.status);
+        }
+        return response.json();
+      })
       .then(resolve, reject)
-      .catch(reject);
+      .catch(err);
   });
 }
 
@@ -49,13 +67,24 @@ function recurseThroughRequests(urls, apiType) {
         // next!
         recurseThroughRequests(urls, apiType)
           .then(resolve, reject);
+      }, (e) => {
+        let msg = 'Unknown error occured';
+        switch (e) {
+          case 404:
+            msg = `No data was found for symbol ${t[1]}.`;
+            break;
+          case 429:
+            msg = 'Too many requests, please try again in a moment.';
+            break;
+          default:
+            break;
+        }
+        err(msg);
+        // next!
+        recurseThroughRequests(urls, apiType)
+          .then(resolve, reject);
       })
-      .catch((e) => {
-        dispatch({
-          type: ActionTypes.ERROR,
-          payload: e,
-        });
-      });
+      .catch(err);
     }
     else {
       // nothing to do

@@ -1,3 +1,6 @@
+import Blueprint from '@blueprintjs/core';
+import Toaster from '../../components/Toaster';
+
 import ActionTypes from '../action_types.json';
 
 const initState = {
@@ -10,6 +13,15 @@ const initState = {
  */
 export default function transient(state = initState, action) {
   switch (action.type) {
+    case ActionTypes.ERROR: {
+      // SPECIAL CASE where we need to dispatch the toast but not actually save anything
+      Toaster.show({
+        message: action.payload.msg,
+        intent: Blueprint.Intent.DANGER,
+        iconName: 'error',
+      });
+      return state;
+    }
     case ActionTypes.SET_APP_READY: {
       return {
         ...state,
