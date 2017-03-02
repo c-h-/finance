@@ -2,9 +2,9 @@ export default {
   showIcon: true,
   showLabel: true,
   activeTintColor: '#000',
-  activeBackgroundColor: '#EEE',
-  inactiveTintColor: '#666',
-  // inactiveBackgroundColor: '#0F0',
+  activeBackgroundColor: '#EBF1F5',
+  inactiveTintColor: '#5C7080',
+  inactiveBackgroundColor: '#CED9E0',
   indicatorStyle: {
     backgroundColor: '#000',
   },
@@ -13,6 +13,7 @@ export default {
   },
   labelStyle: {
     color: '#000',
+    marginTop: 5,
   },
   tabStyle: {},
 };

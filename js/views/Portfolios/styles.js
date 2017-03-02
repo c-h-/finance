@@ -6,6 +6,7 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 20,
+    backgroundColor: '#EBF1F5',
   },
   buttonContainer: {
     alignItems: 'flex-start',

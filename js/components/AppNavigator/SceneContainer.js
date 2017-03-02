@@ -28,6 +28,17 @@ const styles = StyleSheet.create({
   },
 });
 
+const greetings = [
+  'Hello',
+  'Well look at you',
+  'Howdy',
+  'You look great today',
+  'Is it that late already?',
+  'Bonjour',
+  'Hakuna Matata',
+  '...',
+];
+
 const SceneContainer = (props) => {
   const {
     appReady,
@@ -39,7 +50,9 @@ const SceneContainer = (props) => {
     </View>
   ) : (
     <View style={styles.loadingContainer}>
-      <Text className="pt-ui-text-large" style={styles.text}>Hello</Text>
+      <Text className="pt-ui-text-large" style={styles.text}>
+        {greetings[Math.floor(Math.random() * greetings.length)]}
+      </Text>
       <Spinner />
     </View>
   );

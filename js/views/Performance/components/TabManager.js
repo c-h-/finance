@@ -95,10 +95,14 @@ class TabManager extends Component {
             New Comparison
           </View>
         </View>
-        <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTabIndex}>
-          {this.getTabs()}
-          {this.getTabPanels()}
-        </Tabs>
+        <Text style={styles.Text} />
+        <Text style={styles.Text} />
+        <View className="pt-card pt-elevation-1">
+          <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTabIndex}>
+            {this.getTabs()}
+            {this.getTabPanels()}
+          </Tabs>
+        </View>
       </View>
     );
   }

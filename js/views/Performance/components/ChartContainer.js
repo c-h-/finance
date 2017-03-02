@@ -26,7 +26,6 @@ class ChartContainer extends Component {
   render() {
     return (
       <View
-        className="pt-card"
         onLayout={this.handleLayout}
       >
         <Chart width={this.state.width} />

@@ -58,13 +58,17 @@ class Settings extends Component {
       <View style={styles.container}>
         <h2>Settings</h2>
         <Text style={styles.Text}>Change your settings here.</Text>
-        <Text style={styles.Text}>Quandl API key</Text>
-        <TextInput
-          style={styles.TextInput}
-          value={quandl || ''}
-          onBlur={this.handleBlur('quandl')}
-          onChange={this.handleChange('quandl')}
-        />
+        <Text style={styles.Text} />
+        <Text style={styles.Text} />
+        <View style={styles.container} className="pt-card pt-elevation-1">
+          <Text style={styles.Text}>Quandl API key</Text>
+          <TextInput
+            style={styles.TextInput}
+            value={quandl || ''}
+            onBlur={this.handleBlur('quandl')}
+            onChange={this.handleChange('quandl')}
+          />
+        </View>
       </View>
     );
   }

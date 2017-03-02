@@ -3,10 +3,11 @@ import React, {
 } from 'react';
 
 import Icon from './Icon';
+import Hello from '../views/Hello';
 import Performance from '../views/Performance';
 import Portfolios from '../views/Portfolios';
-import NotFound from '../views/NotFound';
 import Settings from '../views/Settings';
+import NotFound from '../views/NotFound';
 
 export const notFoundKey = 'NotFound';
 
@@ -32,6 +33,17 @@ const getIcon = (name) => {
  * The routes for the App
  */
 export const AppRoutes = {
+  Hello: {
+    screen: Hello,
+    path: 'hello',
+    navigationOptions: {
+      title: 'Hello',
+      tabBar: {
+        label: 'Hello',
+        icon: getIcon('sentiment-very-satisfied'),
+      },
+    },
+  },
   Performance: {
     screen: Performance,
     path: 'performance',
