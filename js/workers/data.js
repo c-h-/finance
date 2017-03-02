@@ -189,8 +189,26 @@ function setValues(point, obj = {}) {
 /**
  * Prepares api data for charting display
  */
-function normalizeData(data) {
+function normalizeData(data, dates) {
   const shapedData = [];
+
+  // edge case where only asset is cash and therefore no data from api
+  if (data.length === 0) {
+    const start = dates[0];
+    const end = dates[1];
+    if (start instanceof Date && end instanceof Date) {
+      const points = [];
+      const pointer = start;
+      while (pointer <= end) {
+        points.push({
+          date: pointer.getTime(),
+          USD: 1,
+        });
+        pointer.setDate(pointer.getDate() + 1);
+      }
+      data.push(points.reverse());
+    }
+  }
 
   // merge data points
   data.forEach((dataset) => {
@@ -354,11 +372,12 @@ function applySummingMode(normalizedData) {
 function shapeDataForChart(payload) {
   const {
     data,
+    dates,
     mode,
   } = payload;
 
   // normalize data for charting
-  const normalizedData = normalizeData(data);
+  const normalizedData = normalizeData(data, dates);
 
   // process raw symbols for portfolio values
   // processes normalizedData *in place*

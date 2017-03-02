@@ -42,30 +42,23 @@ export default function (store) {
             selectedTab.data.dates,
             settings.quandl
           ) || []).map(url => url[0]);
-          const misses = checkCacheKeys(keys, currentCacheKeys);
-          if (misses.length < keys.length) {
-            const cacheEntriesToShape = keys.map(key => cache[hash(key)]);
-            // make sure cache is full for our needed symbols
-            return next({
-              type: ActionTypes.SHAPE_CHART_DATA,
-              payload: {
-                data: cacheEntriesToShape,
-                id: selectedTab.id,
-                dates: selectedTab.data.dates,
-                mode: selectedTab.data.mode,
-                transactions: portfolios.transactions,
-                portfolios: portfolios.rows,
-                symbols,
-              },
-              meta: {
-                WebWorker: true,
-              },
-            });
-          }
-          else {
-            console.warn('Not shaping chart data because we are missing all hash keys');
-            return null;
-          }
+          const cacheEntriesToShape = keys.map(key => cache[hash(key)]);
+          // make sure cache is full for our needed symbols
+          return next({
+            type: ActionTypes.SHAPE_CHART_DATA,
+            payload: {
+              data: cacheEntriesToShape,
+              id: selectedTab.id,
+              dates: selectedTab.data.dates,
+              mode: selectedTab.data.mode,
+              transactions: portfolios.transactions,
+              portfolios: portfolios.rows,
+              symbols,
+            },
+            meta: {
+              WebWorker: true,
+            },
+          });
         }
         default:
           return null;

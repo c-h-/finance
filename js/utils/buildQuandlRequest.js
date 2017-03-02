@@ -64,6 +64,9 @@ function getDatasetCode(symbol) {
  * Builds a time-series request to Quandl for financial data
  */
 export default function buildQuandlDatasetRequest(dates, symbol, quandl) {
+  if (symbol === 'USD') {
+    return false;
+  }
   const start = 'https://www.quandl.com/api/v3/datasets/'
     + `${getDatabaseCode(symbol)}/${getDatasetCode(symbol)}.json`;
   if (!dates[0]) {
