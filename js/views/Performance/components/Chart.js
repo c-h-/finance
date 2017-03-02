@@ -126,6 +126,11 @@ class ChartData extends Component {
                   figs.push(d[key]);
                 }
               }
+              const max = Math.max(...figs);
+              const min = Math.min(...figs);
+              // add 5% margin above and below
+              figs.push(max + ((max - min) * 0.05));
+              figs.push(min - ((max - min) * 0.05));
               return figs;
             }}
           >
