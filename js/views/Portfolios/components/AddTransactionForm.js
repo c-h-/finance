@@ -194,7 +194,9 @@ class AddTransactionForm extends Component {
           </View>
         </Popover>
 
-        <Text style={styles.Text}>{selectedAssetType.enum === 0 ? 'Price' : 'Amount'} ($)</Text>
+        <Text style={styles.Text}>
+          {selectedAssetType.enum === 0 ? 'Price ($)' : 'Amount (in currency)'}
+        </Text>
         <TextInput
           style={styles.TextInput}
           value={amount || ''}

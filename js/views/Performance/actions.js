@@ -66,13 +66,13 @@ export function fetchUpdatedStats(id, reqData) {
     } = state.settings;
 
     const symbols = reqData.selectedSymbols.split(',');
-    const quandlURLs = getQuandlUrlsFromMixed(symbols, transactions, reqData.dates, quandl);
+    const urls = getQuandlUrlsFromMixed(symbols, transactions, reqData.dates, quandl);
 
     return dispatch({
       type: ActionTypes.FETCH_STATS,
       payload: {
-        urls: quandlURLs,
         apiType: misc.apiTypes.QUANDL,
+        urls,
       },
       meta: {
         WebWorker: true,

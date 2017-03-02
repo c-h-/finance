@@ -24,12 +24,12 @@ export default function (store) {
 
       switch (action.type) {
         case ActionTypes.FETCH_STATS: {
-          const keys = action.payload.urls;
+          const keys = action.payload.urls.map(url => url[0]);
           // check if our cache has hits for request being made
           const misses = checkCacheKeys(keys, currentCacheKeys);
 
           if (misses.length) {
-            action.payload.urls = misses;
+            action.payload.urls = action.payload.urls.filter(url => misses.indexOf(url[0]) > -1);
             // set fetching statuses
             next(setFetching(misses.length, misses.length));
             // build partial chart from cached resources

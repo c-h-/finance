@@ -41,7 +41,7 @@ export default function (store) {
             portfolios.transactions,
             selectedTab.data.dates,
             settings.quandl
-          ) || []);
+          ) || []).map(url => url[0]);
           const misses = checkCacheKeys(keys, currentCacheKeys);
           if (misses.length < keys.length) {
             const cacheEntriesToShape = keys.map(key => cache[hash(key)]);

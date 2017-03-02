@@ -110,7 +110,7 @@ class PortfolioEditor extends Component {
         break;
       }
       case transStructure.AMOUNT: {
-        value = `$${value || 0}`;
+        value = value || 0;
         break;
       }
       case transStructure.NOTES:

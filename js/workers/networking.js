@@ -28,7 +28,8 @@ function getURLContents(url, options) {
 function recurseThroughRequests(urls, apiType) {
   return new Promise((resolve, reject) => {
     if (Array.isArray(urls) && urls.length) {
-      const url = urls.pop();
+      const t = urls.pop();
+      const url = t[0];
       getURLContents(url).then((body) => {
         if (body) {
           dispatch({
@@ -38,6 +39,7 @@ function recurseThroughRequests(urls, apiType) {
               apiType,
               url,
               body,
+              symbol: t[1],
             },
             meta: {
               WebWorker: true,

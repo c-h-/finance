@@ -35,14 +35,18 @@ const QUANDL_CURRENCY_COLUMNS = {
   VOLUME: 5,
 };
 
+const CURRENCIES = ['USD', 'ETH', 'BTC'];
+
 /**
  * Perform expensive data shaping here in reducer to save the main thread's framerate
  */
-function shapeResponse(data) {
+function shapeResponse(data, symbol) {
   if (data && data.dataset && data.dataset.data && data.dataset.column_names) {
     let valueColumnToKeep;
     let colsDef;
-    const valueColName = data.dataset.dataset_code || 'value';
+    const valueColName = CURRENCIES.indexOf(symbol) === -1
+      ? (data.dataset.dataset_code || 'value')
+      : symbol;
     switch (data.dataset.database_code) {
       case 'BAVERAGE':
         valueColumnToKeep = QUANDL_CURRENCY_COLUMNS.AVG_24;
@@ -261,8 +265,8 @@ function processPortfolios(normalizedData, payload) {
             return trans[transStructure.SYMBOL].toUpperCase() === symbol;
           }).sort((a, b) => a[transStructure.DATE] - b[transStructure.DATE]);
 
-          if (symbol === 'USD') {
-            // special case for cash
+          if (CURRENCIES.indexOf(symbol) > -1) {
+            // process currency
             const amountAtDate = symbolTransactions.filter((trans) => {
               return trans[transStructure.DATE] <= point.date;
             }).reduce((acc, curr) => {
@@ -271,12 +275,20 @@ function processPortfolios(normalizedData, payload) {
                 : acc;
             }, 0);
 
+            // model exchange rate as multiplier. effect is to show value of holdings
+            // in foreign currency in USD as reported by exchange rate
+            const multiplier = point[symbol] ? point[symbol] : 1;
+
             // add the cash value to the portfolio's value
             portfolioValue += amountAtDate
-              ? parseFloat(amountAtDate.toFixed(2))
+              ? parseFloat((multiplier * amountAtDate).toFixed(2))
               : 0;
+            // if (_i === normalizedData.shapedData.length - 1) {
+            //   console.log('symbol', symbol, amountAtDate, multiplier, point[symbol], portfolioValue);
+            // }
           }
           else {
+            // process equity
             // the shares owned at this point's date for the portfolio
             const sharesAtDate = symbolTransactions.filter((trans) => {
               return trans[transStructure.DATE] <= point.date;
@@ -377,7 +389,10 @@ self.onmessage = ({ data: action }) => { // `data` should be a FSA compliant act
         type: ActionTypes.SET_CACHE,
         payload: {
           key: action.payload.url,
-          value: shapeResponse(action.payload.body),
+          value: shapeResponse(
+            action.payload.body,
+            action.payload.symbol
+          ),
         },
       });
       dispatch({
