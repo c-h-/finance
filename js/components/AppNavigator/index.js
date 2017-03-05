@@ -3,7 +3,7 @@ import TabRoutes from './TabRoutes';
 import sharedTabBarOptions from './sharedTabBarOptions';
 
 const AppNavigator = TabNavigator(TabRoutes, {
-  initialRouteName: 'Performance',
+  initialRouteName: 'Hello',
   tabBarOptions: sharedTabBarOptions,
 });
 

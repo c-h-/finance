@@ -1,15 +1,16 @@
-const devPlugins = require('./devPlugins');
-const productionPlugins = require('./productionPlugins');
-const initPlugins = require('./initPlugins');
-const optionalPlugins = require('./optionalPlugins');
+const devPlugins = require('./dev');
+const productionPlugins = require('./production');
+const initPlugins = require('./init');
+const recipePlugins = require('./recipes');
 
-optionalPlugins.forEach((pluginDef) => {
+recipePlugins.forEach((pluginDef) => {
   let Plugin = null;
   try {
     Plugin = require(pluginDef.name); // eslint-disable-line
   }
   catch (e) {
-    console.info(`Tip: Install ${pluginDef.name} with command 'gulp enable ${pluginDef.recipe}'`);
+    console.info(`Tip: Enable ${pluginDef.recipe} features`
+      + ` with command 'gulp enable ${pluginDef.recipe}'`);
   }
   if (Plugin) {
     const list = pluginDef.prodOnly ? productionPlugins : initPlugins;

@@ -44,6 +44,17 @@ export const AppRoutes = {
       },
     },
   },
+  Portfolios: {
+    screen: Portfolios,
+    path: 'portfolios',
+    navigationOptions: {
+      title: 'Portfolios',
+      tabBar: {
+        label: 'Portfolios',
+        icon: getIcon('view-list'),
+      },
+    },
+  },
   Performance: {
     screen: Performance,
     path: 'performance',
@@ -52,17 +63,6 @@ export const AppRoutes = {
       tabBar: {
         label: 'Performance',
         icon: getIcon('timeline'),
-      },
-    },
-  },
-  Portfolios: {
-    screen: Portfolios,
-    path: 'portfolios',
-    navigationOptions: {
-      title: 'Portfolios',
-      tabBar: {
-        label: 'Portfolios',
-        icon: getIcon('reorder'),
       },
     },
   },

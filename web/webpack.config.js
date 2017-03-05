@@ -1,6 +1,7 @@
 const path = require('path');
 const config = require('./webpack/config');
 const plugins = require('./webpack/plugins');
+const babelrc = require('./.babelrc');
 
 const ENV = config.ENV;
 const PUBLIC_PATH = config.PUBLIC_PATH;
@@ -70,29 +71,13 @@ module.exports = {
           // add node_modules here that need to be transpiled
           path.resolve(process.cwd(), 'node_modules', 'react-native-i18n'),
           path.resolve(process.cwd(), 'node_modules', 'react-native-vector-icons'),
+          path.resolve(process.cwd(), 'node_modules', 'react-navigation'),
+          path.resolve(process.cwd(), 'node_modules', 'react-native-tab-view'),
           path.resolve(process.cwd(), 'js'),
           path.resolve(process.cwd(), 'index.web.js'),
         ],
         loader: 'babel-loader',
-        query: {
-          babelrc: false,
-          cacheDirectory: true,
-          plugins: [
-            // optimizes react components
-            'transform-react-inline-elements',
-          ],
-          presets: [
-            [
-              'es2015',
-              {
-                modules: false,
-              },
-            ],
-            'stage-0',
-            // use react preset so we can get tree shaking
-            'react',
-          ],
-        },
+        query: babelrc,
       },
       // JSON
       {
@@ -105,6 +90,7 @@ module.exports = {
         test: /\.(png|jpg|jpeg|gif|svg)$/,
         loader: 'url-loader',
         options: {
+          limit: 8192,
           name: 'images/[name]_[hash:base64:5].[ext]',
         },
       },
@@ -119,9 +105,14 @@ module.exports = {
       // Fonts
       // Inline base64 URLs for <=8k fonts, direct URLs for the rest
       {
-        test: /\.(woff|woff2|ttf|eot)$/,
-        loader: 'file-loader',
+        test: /\.(woff|woff2|ttf|eot)(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        include: [
+          path.join(process.cwd(), 'node_modules/react-native-vector-icons'),
+          path.join(process.cwd(), 'node_modules/@blueprintjs'),
+        ],
         options: {
+          limit: 8192,
           name: 'fonts/[name]_[hash:base64:5].[ext]',
         },
       },

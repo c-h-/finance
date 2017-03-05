@@ -4,6 +4,8 @@ import {
   Text,
 } from 'react-native';
 
+import Icon from '../../components/Icon';
+
 import styles from './styles';
 
 const Hello = () => {
@@ -17,7 +19,7 @@ const Hello = () => {
         </Text>
         <Text style={styles.Text} />
 
-        <h3>Private, Secure, and Open-Source</h3>
+        <h3><Icon name="lock" /> Private, Secure, and Open-Source</h3>
         <Text style={styles.Text}>Your finances are your business only. This app never sends your
           financial data anywhere. Keep in mind this means that if you clear your browser, your data
           is gone irrecoverably. Export and back up regularly.
@@ -35,7 +37,7 @@ const Hello = () => {
         </Text>
         <Text style={styles.Text} />
 
-        <h3>Portfolios and Transactions</h3>
+        <h3><Icon name="view-list" /> Portfolios and Transactions</h3>
         <Text style={styles.Text}>You can also create portfolios with transactions.</Text>
         <Text style={styles.Text}>With transactions you can represent stock
           share purchases or sales.</Text>
@@ -45,7 +47,7 @@ const Hello = () => {
           holdings in USD with transactions.</Text>
         <Text style={styles.Text} />
 
-        <h3>Performance Comparisons and Charts</h3>
+        <h3><Icon name="timeline" /> Performance Comparisons and Charts</h3>
         <Text style={styles.Text}>Charts are the heart of this simple app. Mix and
           match your portfolios to see their values change. Cash assets go up and
           down according to transactions. See the USD market value of your holdings
@@ -57,16 +59,25 @@ const Hello = () => {
         <Text style={styles.Text}>Easily switch between charts by creating Comparison tabs.</Text>
         <Text style={styles.Text} />
 
-        <h3>Settings</h3>
+        <h3><Icon name="settings" /> Settings</h3>
         <Text style={styles.Text}>Data is pulled from the excellent meta-database Quandl. You will
             need a proper Quandl API key to pull new data in the Settings page.</Text>
         <Text style={styles.Text} />
 
-        <h3>Caching and Responsiveness</h3>
+        <h3><Icon name="touch-app" /> Caching and Responsiveness</h3>
         <Text style={styles.Text}>This app should remain responsive while loading due to offloading
           data processing and networking to worker threads. You will also get a boost from
           aggressive network caching. Network caching should mean you should never have to request
           the same data twice.
+        </Text>
+
+        <h3><Icon name="cloud" /> Data Sources</h3>
+        <Text style={styles.Text}>There are two ways to get the data this app requires. Getting a
+          free Quandl API Key gives the app access to US Stock, Bitcoin, and Ethereum closing
+          prices. For access to ETFs and importing your Robinhood portfolio, you can lend this app
+          your Robinhood account credentials. Keep in mind that your account credentials give full
+          access to your account - protect them. This app uses the Robinhood API unofficially and is
+          subject to stop working at any time.
         </Text>
       </View>
     </View>

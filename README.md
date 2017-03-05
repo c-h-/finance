@@ -1,16 +1,19 @@
 # Universal Native Boilerplate
-![Platforms](/boilerplate/docs/images/platforms.png?raw=true)
+![Platforms](/boilerplate/docs/images/platforms_inv.png?raw=true)
 
+[![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/c-h-/universal-native-boilerplate)
+[![Build Status](https://travis-ci.org/c-h-/universal-native-boilerplate.svg?branch=master)](https://travis-ci.org/c-h-/universal-native-boilerplate)
+[![bitHound Overall Score](https://www.bithound.io/github/c-h-/universal-native-boilerplate/badges/score.svg)](https://www.bithound.io/github/c-h-/universal-native-boilerplate)
 ## Introduction
-The holy grail of front-end development is writing code and compiling for every platform without compromise. React Native's philosophy is "learn once, write everywhere". Today that goal is closer than ever.
+Use this starter project to create an app that works well on every platform - Android, iOS, macOS, server-side rendering, web, and Windows. Pick only the platforms and features you want.
 
-This starter project is a boilerplate: a project pre-configured so that you can start building.
+As you create, the built-in tools grow with you. The project is organized to prevent headaches and refactors. When you're ready for production, pain-free web and server optimizations are built-in.
 
-Use this boilerplate to create an app that works well on every platform - Android, iOS, macOS, server-side rendering, web, and Windows. Pick the platforms and features you want. As you create the built-in tools grow with you. It's organized to prevent headaches from the beginning. When you're ready for production, pain-free web and server optimizations are built-in.
+The web platform build is very capable with easy progressive web app support, webpack 2 with tree shaking, URL support, state persistence, and more. Get reports on page speed, bundle size, and progressive web app stats with `gulp analyze web`.
 
 Familiarity with React and React Native is recommended. Explore the codebase in `/js` to see how easy it is to make 99% of code written cross-platform.
 
-**[Read more about this project in the blog post](https://medium.com/@chulcher/better-apps-by-default-f5a77ca4b9fb)**
+**[Read about the motivations for this project](https://medium.com/@chulcher/better-apps-by-default-f5a77ca4b9fb)**
 
 `Node >= 6.8.0 recommended`
 
@@ -21,7 +24,7 @@ Familiarity with React and React Native is recommended. Explore the codebase in 
 git clone https://github.com/c-h-/universal-native-boilerplate.git myApp
 cd myApp
 npm install
-npm run setup # initialize a new git repository
+npm run setup # initializes a new git repository
 ```
 
 ### Enable Platforms and Features
@@ -48,6 +51,26 @@ gulp analyze web
 ``` 
 
 ## Reference
+### Baked-in Features
+Some features come pre-installed. This includes:
+
+- Platform specific features for web/server (See Web and Server Platform Notes)
+- [React Navigation](https://reactnavigation.org/)
+  - Great library shares navigation across every platform.
+  - A custom TabNavigator is built into this boilerplate in order to have a working, consistent experience across platforms. This is used by default and does not use native modules.
+  - Native TabNavigators are used on iOS and Android in order to get smooth native behavior. Delete `/js/components/AppNavigator.android.js` and `/js/components/AppNavigator.ios.js` to use the same navigator on every platform.
+  - Also configured into this boilerplate:
+    - Deep linking support (Android/iOS; easy to add others) _Note: Make sure to [configure the proper scheme and hostname](https://reactnavigation.org/docs/guides/linking) for your app_
+    - URL support (web/server)
+    - Redux integrated
+- [Internationalization](https://github.com/AlexanderZaytsev/react-native-i18n) - translate your app into other languages easily
+  - See react-native-i18n home page for usage. Allows for multiple languages with template variables.
+- Redux
+  - State management and logic organization
+- Redux Persist
+  - Persist state across sessions
+  - See [Redux Persist](https://github.com/rt2zz/redux-persist#transforms) for great transforms like compression and encryption
+
 ### Enabling Platforms and Features
 
 When every feature and platform is enabled npm moves quite slowly. Therefore, all the source code required to run each platform and feature is included but the dependencies need to be enabled.
@@ -56,7 +79,7 @@ Run `gulp enable <recipe>` for each desired platform and feature.
 
 Adding platforms and features after you write your app can give unexpected results. Additionally, your app's code may need refactoring if you enable platforms later on.
 
-Available platforms and features:
+Available to enable platforms and features (disabled by default):
 
 Name | Type | Notes
 --- | --- | ---
@@ -97,27 +120,8 @@ Options:
 Available platforms: android, ios, macos, server, web, windows
 ```
 
-#### Automated Organization
+#### File Organization
 If you use the command line, compiled versions are organized by platform in the `/build` folder. Analysis reports are saved to `/build/web`.
-
-### Baked-in Features
-Some features come pre-installed. This includes:
-
-- [React Navigation](https://reactnavigation.org/)
-  - Great library shares navigation across every platform.
-  - A custom TabNavigator is built into this boilerplate in order to have a working, consistent experience across platforms. This is used by default and does not use native modules.
-  - Native TabNavigators are used on iOS and Android in order to get smooth native behavior. Delete `/js/components/AppNavigator.android.js` and `/js/components/AppNavigator.ios.js` to use the same navigator on every platform.
-  - Also configured into this boilerplate:
-    - Deep linking support (Android/iOS; easy to add others) _Note: Make sure to [configure the proper scheme and hostname](https://reactnavigation.org/docs/guides/linking) for your app_
-    - URL support (web/server)
-    - Redux integrated
-- [Internationalization](https://github.com/AlexanderZaytsev/react-native-i18n) - translate your app into other languages easily
-  - See react-native-i18n home page for usage. Allows for multiple languages with template variables.
-- Redux
-  - State management and logic organization
-- Redux Persist
-  - Persist state across sessions
-  - See [Redux Persist](https://github.com/rt2zz/redux-persist#transforms) for great transforms like compression and encryption
 
 ## Platforms
 ### Android
@@ -172,18 +176,23 @@ The web and server platform has been set up to make newly created projects great
 Here's a list of features and notes:
 
 - Webpack 2 + Babel build script with Tree Shaking enabled.
-- Redux pre-installed
 - [Progressive Web App](https://developers.google.com/web/progressive-web-apps/)
-  - Installable on mobile home screens
-  - [Favicons](https://github.com/haydenbleasel/favicons) for every browser
-  - [Offline-first](https://github.com/NekR/offline-plugin) using a Service Worker to cache resources
-  - It's easy to test how well it performs with automatic [lighthouse](https://github.com/GoogleChrome/lighthouse) testing
+  - Progressive Web App features make the app [offline-first](https://github.com/NekR/offline-plugin) and installable to mobile home screens.
+  - Automated [Lighthouse](https://github.com/GoogleChrome/lighthouse) testing (`gulp analyze web`) gives a scorecard for progressive web app usability.
+  - [Favicons](https://github.com/haydenbleasel/favicons) for every browser and platform
+  - PWA manifest generated by [forked favicons plugin](https://github.com/c-h-/favicons-webpack-plugin); configure in `/web/webpack/pwaConfig.js`
 - Advanced bundle optimizations such as:
   - [Resource Hints](https://www.w3.org/TR/resource-hints/) for faster page load times
   - [Optimize JS](https://github.com/nolanlawson/optimize-js) potentially speeds up web app start times. Definitely test to ensure it actually improves start times for your app.
   - [React element inlining](https://babeljs.io/docs/plugins/transform-react-inline-elements/) as described well [here](http://techblog.netflix.com/2017/01/crafting-high-performance-tv-user.html).
 
+  - [React constant elements](https://babeljs.io/docs/plugins/transform-react-constant-elements/)
+  - Strip PropTypes in production
+
 ### Notes and Tips
+#### Git Dependencies
+You may notice that a few dependencies point to forked git repositories. This is only to apply patches that haven't yet been pushed from the package being forked. When the upstream packages release the patches these git dependencies will be removed. 
+
 #### React Performance
 Try to limit passing dynamic props and passing props between React components wherever possible. [Netflix has good insights](http://techblog.netflix.com/2017/01/crafting-high-performance-tv-user.html) into the lengths you can go to maximize performance.
 
@@ -196,7 +205,7 @@ It is possible to use CSS with the web platform only, but it's not recommended d
 
 #### Supported JS Features
 See the [official docs](https://facebook.github.io/react-native/docs/javascript-environment.html) for details of which JS features are supported by default.
-The web platform DOES NOT use `.babelrc`, it instead uses a babel configuration within `/web/webpack.config.js` to enable the same features in a way that works with other plugins.
+The web platform DOES NOT use `/.babelrc`, it instead uses a babel configuration located at `/web/.babelrc.json` to enable the same features in a way that works with other plugins and tree shaking.
 
 #### Platform Specific Code
 It's easy to add native functionality to a React Native app and consume it from JS. See [official docs](https://facebook.github.io/react-native/docs/native-modules-ios.html) for details.
@@ -229,4 +238,3 @@ Web | Web HMR | Web Hot Module Reloading would be lovely, but unfortunately [doe
 Web | Alternative React backends | [Currently not possible](https://github.com/necolas/react-native-web/issues/330)
 Web | Parallelized builds | [Currently broken](https://github.com/amireh/happypack/issues/128)
 Web | Code Splitting | Currently I'm of the opinion it's too much complexity to have code splitting come standard.
-Windows | Build | Use gulp CLI to build Windows packages.

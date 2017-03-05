@@ -1,6 +1,5 @@
 import Blueprint from '@blueprintjs/core';
 import Toaster from '../../components/Toaster';
-
 import ActionTypes from '../action_types.json';
 
 const initState = {

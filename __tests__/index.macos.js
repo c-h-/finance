@@ -1,4 +1,3 @@
-
 /* global it:false */
 
 import React from 'react';

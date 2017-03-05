@@ -1,8 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
-
+const babelrc = require('../web/.babelrc');
 const config = require('../web/webpack/config');
+const plugins = require('../web/webpack/plugins');
 
 const excludeLibs = [
   'express',
@@ -67,25 +68,7 @@ module.exports = {
           path.resolve(process.cwd(), 'server', 'src'),
         ],
         loader: 'babel-loader',
-        query: {
-          babelrc: false,
-          cacheDirectory: true,
-          plugins: [
-            // optimizes react components
-            'transform-react-inline-elements',
-          ],
-          presets: [
-            [
-              'es2015',
-              {
-                modules: false,
-              },
-            ],
-            'stage-0',
-            // use react preset so we can get tree shaking
-            'react',
-          ],
-        },
+        query: babelrc,
       },
       // JSON
       {
@@ -99,22 +82,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
-  ]).concat(ENV === 'production' ? [
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
-        screw_ie8: true,
-      },
-      output: {
-        comments: false,
-      },
-      sourceMap: false,
-    }),
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      debug: false,
-    }),
-  ] : []),
+  ]).concat(ENV === 'production' ? plugins.production : []),
 
   stats: {
     colors: true,
