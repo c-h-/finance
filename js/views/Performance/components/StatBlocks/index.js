@@ -75,7 +75,7 @@ class StatBlocks extends Component {
       selectedTabID,
       tabs,
     } = perfReducer;
-    const symbols = StatBlocks.getSymbols(tabs, selectedTabID).map(symbol => symbol.value);
+    const symbols = StatBlocks.getSymbols(tabs, selectedTabID);
     if (!symbols || !symbols.length) {
       return null;
     }
@@ -96,11 +96,11 @@ class StatBlocks extends Component {
           && symbols.map((col) => {
             return (
               <StatBlock
-                key={col}
-                col={col}
+                key={col.value}
+                col={col.value}
                 cols={symbols}
                 data={selectedBlockData}
-                headlines={news[col]}
+                headlines={news[col.value]}
               />
             );
           })

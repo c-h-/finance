@@ -4,6 +4,12 @@ import {
   View,
 } from 'react-native';
 
+import {
+  Popover,
+  PopoverInteractionKind,
+  Position,
+} from '@blueprintjs/core';
+import parseDate from '../../../../utils/parseDate';
 import Link from '../../../../components/Link';
 import {
   SYM_DELIMETER,
@@ -28,6 +34,14 @@ function getTitle(col) {
   return col;
 }
 
+function renderPopoverContent(content) {
+  return (
+    <View style={styles.popover}>
+      {content}
+    </View>
+  );
+}
+
 const StatBlock = (props) => {
   const {
     col,
@@ -35,7 +49,8 @@ const StatBlock = (props) => {
     data,
     headlines,
   } = props;
-  const color = colors[cols.indexOf(col) % colors.length];
+  const columnValues = cols.map(symbol => symbol.value).sort();
+  const color = colors[columnValues.indexOf(col) % colors.length];
   if (!data || !data[0] || !data[1]) {
     return null;
   }
@@ -79,19 +94,56 @@ const StatBlock = (props) => {
           <Text style={styles.StatBlockMetric}>${endVal}</Text>
         </View>
       </View>
+      <Text>Current Headlines</Text>
       <View style={styles.headlines}>
         {
           formattedHeadlines &&
           formattedHeadlines.filter((_, i) => i < 5).map((headline) => {
             return (
               <View key={headline.url} style={styles.headline}>
-                <Link href={headline.url}>{headline.name}</Link>
-                {/*<Text
-                  accessibilityRole="link"
-                  onClick={this.openLink(headline.url)}
+                <Popover
+                  content={renderPopoverContent(headline.description)}
+                  interactionKind={PopoverInteractionKind.HOVER}
+                  position={Position.TOP}
+                  hoverOpenDelay={500}
                 >
-                  {headline.name}
-                </Text>*/}
+                  <Link
+                    href={headline.url}
+                    style={{ color }}
+                  >
+                    {headline.name}
+                  </Link>
+                </Popover>
+                <View style={styles.tags}>
+                  <Text
+                    style={styles.tag}
+                    className="pt-tag pt-minimal"
+                    key={headline.datePublished}
+                  >
+                    {parseDate(headline.datePublished)
+                  }</Text>
+                  <Text
+                    style={styles.tag}
+                    className="pt-tag pt-minimal"
+                    key={headline.category}
+                  >
+                    {headline.category}
+                  </Text>
+                  {
+                    headline.provider &&
+                    headline.provider.map((provider) => {
+                      return (
+                        <Text
+                          style={styles.tag}
+                          className="pt-tag pt-minimal"
+                          key={provider.name}
+                        >
+                          {provider.name}
+                        </Text>
+                      );
+                    })
+                  }
+                </View>
               </View>
             );
           })

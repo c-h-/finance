@@ -1,4 +1,5 @@
-export default function (date) {
+export default function (_date) {
+  const date = _date instanceof Date ? _date : new Date(_date);
   const day = date.getDate();
   const month = date.getMonth();
   const year = date.getFullYear();

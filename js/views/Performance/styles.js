@@ -3,16 +3,34 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  popover: {
+    maxWidth: 300,
+    padding: 10,
+  },
+  tags: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginVertical: 10,
+  },
+  tag: {
+    marginBottom: 5,
+    marginRight: 5,
+  },
   headline: {
     marginVertical: 4,
+  },
+  headlines: {
+    maxHeight: 300,
+    overflowY: 'auto',
   },
   StatBlocks: {
     flexDirection: 'row',
     justifyContent: 'center',
     flexWrap: 'wrap',
+    marginBottom: 10,
   },
   StatBlock: {
-    width: 300,
+    width: 400,
     marginHorizontal: 10,
     marginTop: 20,
   },

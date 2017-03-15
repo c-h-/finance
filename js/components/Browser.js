@@ -44,12 +44,25 @@ class Browser extends Component {
     route: PropTypes.string,
     dispatch: PropTypes.func,
   }
+  componentWillReceiveProps(nextProps) {
+    const {
+      route,
+    } = this.props;
+    if (route !== nextProps.route && this.iframe) {
+      // new route, set current route to '' to reset iframe to improve appearance as it loads
+      this.iframe.src = '';
+    }
+  }
   loadHandler = (ev) => {
-    // console.log('Load!', ev.nativeEvent);
+    console.log('Load!', ev.nativeEvent);
+  }
+  loadStartHandler = (ev) => {
+    console.log('Loading!', ev.nativeEvent);
   }
   refreshHandler = () => {
     if (this.iframe) {
-      this.iframe.src += '';
+      this.iframe.style.opacity = '0.5';
+      this.iframe.style.filter = 'alpha(opacity=50)'; // IE :|
     }
   }
   goExternal = () => {
@@ -100,6 +113,7 @@ class Browser extends Component {
         <iframe
           src={route}
           onLoad={this.loadHandler}
+          onLoadStart={this.loadStartHandler}
           style={browser}
           ref={ref => (this.iframe = ref)}
         />
