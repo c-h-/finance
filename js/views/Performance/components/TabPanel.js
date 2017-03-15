@@ -9,7 +9,7 @@ import {
 import {
   connect,
 } from 'react-redux';
-import Select from 'react-select';
+import { AsyncCreatable } from 'react-select';
 import Blueprint from '@blueprintjs/core';
 import {
   DateRangePicker,
@@ -19,14 +19,21 @@ import '../../../../node_modules/react-select/dist/react-select.css';
 import styles from '../styles';
 
 import parseDate from '../../../utils/parseDate';
+import getTickerAutocomplete from '../../../utils/getTickerAutocomplete';
 import {
   fetchUpdatedStats,
   saveComparison,
 } from '../actions';
-import ChartContainer from './ChartContainer';
+import ChartContainer from './Chart';
+import StatBlocks from './StatBlocks';
 
-import misc from '../../../constants/misc.json';
+import {
+  chartModes,
+  DELIMITER,
+  SYM_DELIMETER,
+} from '../../../constants/misc.json';
 import symbolTypes from '../../../constants/symbolTypes.json';
+import ActionTypes from '../../../redux/action_types.json';
 
 const {
   Popover,
@@ -34,9 +41,7 @@ const {
   ProgressBar,
 } = Blueprint;
 
-const modes = misc.chartModes;
-
-const DELIMITER = misc.DELIMITER;
+const modes = chartModes;
 
 const now = new Date();
 const lastYear = new Date();
@@ -50,6 +55,60 @@ class TabPanel extends Component {
     id: PropTypes.number,
     numFetching: PropTypes.number,
     totalFetching: PropTypes.number,
+  }
+  /**
+   * Renders a value
+   */
+  static valueRenderer(option) {
+    const ind = option.value.indexOf(SYM_DELIMETER);
+    if (ind === -1) {
+      return option.value;
+    }
+    else {
+      const type = option.value.slice(0, ind);
+      if (type !== symbolTypes.PORTFOLIO) {
+        return option.value.slice(ind + SYM_DELIMETER.length);
+      }
+    }
+    return option.label;
+  }
+  /**
+   * Creates User Input Prompt Text
+   */
+  static promptTextCreator(input) {
+    return `Use "${input.toUpperCase()}"`;
+  }
+  /**
+   * Creates new option for Select
+   */
+  static newOptionCreator(option) {
+    const value = option.label.indexOf('Use "') > -1
+      ? option.label.slice(5).slice(0, -1)
+      : option.label;
+    return {
+      ...option,
+      label: `Use "${value.toUpperCase()}"`,
+      name: 'User Input',
+      exchDisp: 'Symbol',
+      value: `${symbolTypes.USER_INPUT}${SYM_DELIMETER}${value}`,
+    };
+  }
+  /**
+   * Renders option for Select
+   */
+  static optionRenderer(option) {
+    return (
+      <View style={styles.option}>
+        <Text style={styles.optionLabel}>
+          {option.label}
+          <Text style={styles.optionName}>{option.name ? `   ${option.name}` : ''}</Text>
+        </Text>
+        {
+          option.exchDisp &&
+          <Text>{option.exchDisp}</Text>
+        }
+      </View>
+    );
   }
   state = {
     selectedSymbols: '',
@@ -80,9 +139,57 @@ class TabPanel extends Component {
       this.updateStateFromStore(selectedComparison.data);
     }
   }
-  setSelected = (val) => {
-    this.saveState({
-      selectedSymbols: val,
+  /**
+   * Gets ticker options for autocomplete
+   */
+  getOptions = (input) => {
+    return new Promise((resolve) => {
+      const {
+        dispatch,
+      } = this.props;
+      const portfolios = this.getPortfolios();
+      const finish = (opts) => {
+        resolve({
+          options: opts
+            ? [
+              ...opts,
+              ...portfolios.filter((port) => {
+                return port.label.toLowerCase().indexOf(input.toLowerCase()) > -1;
+              }),
+            ]
+            : portfolios,
+        });
+      };
+      if (typeof input === 'string' && input.length) {
+        // get autocomplete options
+        getTickerAutocomplete(input)
+          .then((resp) => {
+            if (resp && resp.ResultSet && resp.ResultSet.Result) {
+              finish(resp.ResultSet.Result.map((ticker) => {
+                return {
+                  label: ticker.symbol,
+                  value: `${ticker.type.toUpperCase()}${SYM_DELIMETER}${ticker.symbol}`,
+                  exchDisp: ticker.exchDisp,
+                  name: ticker.name,
+                };
+              }));
+            }
+            else {
+              finish();
+            }
+          }, (err) => {
+            dispatch({
+              type: ActionTypes.ERROR,
+              payload: {
+                msg: err,
+              },
+            });
+            finish();
+          });
+      }
+      else {
+        finish();
+      }
     });
   }
   getPortfolios = () => {
@@ -92,8 +199,15 @@ class TabPanel extends Component {
     return rows.map((row) => {
       return {
         label: row.name,
-        value: `${symbolTypes.PORTFOLIO}::${row.id}`,
+        value: `${symbolTypes.PORTFOLIO}${SYM_DELIMETER}${row.id}`,
+        name: 'User Input',
+        exchDisp: 'Portfolio',
       };
+    });
+  }
+  setSelected = (val) => {
+    this.saveState({
+      selectedSymbols: val,
     });
   }
   updateStateFromStore = (newState) => {
@@ -149,6 +263,7 @@ class TabPanel extends Component {
     } = this.props;
     dispatch(fetchUpdatedStats(id, this.state));
   }
+
   render() {
     const {
       selectedSymbols,
@@ -195,17 +310,25 @@ class TabPanel extends Component {
             style={[styles.SelectContainer, styles.toolbarChild]}
           >
             <Text style={styles.Text}>Symbols and/or Portfolios</Text>
-            <Select
-              options={this.getPortfolios()}
+            {/*
+            instead of options, use loadOptions for async option loading.
+            https://github.com/JedWatson/react-select#async-options
+            old way: options={this.getPortfolios()}
+            */}
+            <AsyncCreatable
+              promptTextCreator={TabPanel.promptTextCreator}
+              newOptionCreator={TabPanel.newOptionCreator}
+              valueRenderer={TabPanel.valueRenderer}
+              loadOptions={this.getOptions}
               value={selectedSymbols}
               onChange={this.setSelected}
               placeholder="Add ticker symbol(s) and/or portfolio(s)..."
               noResultsText="Nothing Found"
               addLabelText="{label}"
               delimiter={DELIMITER}
+              optionRenderer={TabPanel.optionRenderer}
               autoBlur
               clearable
-              allowCreate
               multi
             />
           </View>
@@ -281,6 +404,7 @@ class TabPanel extends Component {
           </View>
         }
         <ChartContainer />
+        <StatBlocks />
       </View>
     );
   }

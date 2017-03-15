@@ -6,7 +6,10 @@ import {
   tooltip,
 } from 'react-stockcharts';
 
-import colors from '../../../constants/colors.json';
+import {
+  SYM_DELIMETER,
+} from '../../../../constants/misc.json';
+import colors from '../../../../constants/colors.json';
 
 const {
   ToolTipText,
@@ -67,12 +70,15 @@ class Tooltip extends Component {
     const rendered = [];
     for (const key in formatted) {
       if (key !== 'date') {
+        const val = key.indexOf(SYM_DELIMETER) > -1
+          ? key.slice(key.indexOf(SYM_DELIMETER) + SYM_DELIMETER.length)
+          : key;
         rendered.push(
           <ToolTipTSpanLabel
             key={`label_${key}`}
             fill={colors[cols.indexOf(key) % colors.length] || '#333333'}
           >
-            {` ${key.toUpperCase()}: `}
+            {` ${val.toUpperCase()}: `}
           </ToolTipTSpanLabel>
         );
         rendered.push(

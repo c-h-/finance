@@ -19,17 +19,13 @@ import {
   ChartCanvas,
   Chart,
   series,
-  // scale,
   coordinates,
-  // tooltip,
   axes,
 } from 'react-stockcharts';
 
-import styles from '../styles';
-import colors from '../../../constants/colors.json';
+import styles from '../../styles';
+import colors from '../../../../constants/colors.json';
 import Tooltip from './Tooltip';
-
-// import ActionTypes from '../../../redux/action_types.json';
 
 const {
   CrossHairCursor,
@@ -110,7 +106,6 @@ class ChartData extends Component {
         </View>
       );
     }
-    // console.info('rendering', selectedChartData);
     return (
       <ChartCanvas
         width={width}

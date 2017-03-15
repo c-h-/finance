@@ -1,6 +1,13 @@
 import symbolTypes from '../constants/symbolTypes.json';
 import transStructure from '../constants/transactionStructure.json';
-import misc from '../constants/misc.json';
+import {
+  SYM_DELIMETER,
+} from '../constants/misc.json';
+import {
+  defs,
+} from '../constants/assetDefs.json';
+
+const ASSET_DEFS = defs;
 
 /**
  * Get unique values from array back
@@ -20,9 +27,12 @@ function uniq(a) {
 export default function getSymbols(symbols = [], transactions = []) {
   const newSymbols = [];
   for (const i in symbols) {
-    if (symbols[i].indexOf(misc.SYM_DELIMETER) > -1) {
+    const val = symbols[i].value ? symbols[i].value : symbols[i];
+    if (
+      val && val.indexOf(SYM_DELIMETER) > -1
+    ) {
       // found a symbol delimeted by a type
-      const t = symbols[i].split(misc.SYM_DELIMETER);
+      const t = val.split(SYM_DELIMETER);
       switch (t[0]) {
         case symbolTypes.PORTFOLIO: {
           const selectedTransactions = transactions.filter((trans) => {
@@ -30,18 +40,24 @@ export default function getSymbols(symbols = [], transactions = []) {
           });
           selectedTransactions.forEach((trans) => {
             if (newSymbols.indexOf(trans[transStructure.SYMBOL]) === -1) {
-              newSymbols.push(trans[transStructure.SYMBOL].toUpperCase());
+              // associate the user input transaction type to a symbol type
+              const ticker = trans[transStructure.SYMBOL].toUpperCase();
+              const matchedType = ASSET_DEFS.find(type => type.enum === trans[transStructure.TYPE]);
+              const chosenType = matchedType
+                ? (symbolTypes[matchedType.name.toUpperCase()] || symbolTypes.USER)
+                : symbolTypes.USER;
+              newSymbols.push(`${chosenType}${SYM_DELIMETER}${ticker}`);
             }
           });
           break;
         }
         default:
-          newSymbols.push(symbols[i].toUpperCase());
+          newSymbols.push(val.toUpperCase());
           break;
       }
     }
     else {
-      newSymbols.push(symbols[i].toUpperCase());
+      newSymbols.push(val.toUpperCase());
     }
   }
   return uniq(newSymbols);

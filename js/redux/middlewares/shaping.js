@@ -1,5 +1,4 @@
-import getQuandlUrlsFromMixed from '../../utils/getQuandlUrlsFromMixed';
-import checkCacheKeys from '../../utils/checkCacheKeys';
+import getAPIUrlsFromMixed from '../../utils/getAPIUrlsFromMixed';
 import hash from '../../utils/fastHash';
 
 import ActionTypes from '../action_types.json';
@@ -22,7 +21,6 @@ export default function (store) {
         perfReducer,
         settings,
       } = store.getState();
-      const currentCacheKeys = Object.keys(cache);
 
       switch (action.type) {
         case ActionTypes.START_CHART_UPDATE_FLOW: {
@@ -35,8 +33,8 @@ export default function (store) {
           // get the selected tab, then its selected symbols, then quandl urls,
           // then finally generate the hashes we need to check cache against
           const selectedTab = perfReducer.tabs.find(tab => tab.id === perfReducer.selectedTabID);
-          const symbols = selectedTab.data.selectedSymbols.split(',');
-          const keys = (getQuandlUrlsFromMixed(
+          const symbols = selectedTab.data.selectedSymbols;
+          const keys = (getAPIUrlsFromMixed(
             symbols,
             portfolios.transactions,
             selectedTab.data.dates,

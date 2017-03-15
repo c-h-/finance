@@ -27,6 +27,20 @@
           "enum": 1
         }
       ]
+    },
+    {
+      "name": "ETF",
+      "enum": 0,
+      "t_types": [
+        {
+          "name": "Buy",
+          "enum": 0
+        },
+        {
+          "name": "Sell",
+          "enum": 1
+        }
+      ]
     }
   ]
 }

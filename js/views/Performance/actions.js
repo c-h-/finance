@@ -1,4 +1,4 @@
-import getQuandlUrlsFromMixed from '../../utils/getQuandlUrlsFromMixed';
+import getAPIUrlsFromMixed from '../../utils/getAPIUrlsFromMixed';
 
 import ActionTypes from '../../redux/action_types.json';
 import misc from '../../constants/misc.json';
@@ -66,8 +66,12 @@ export function fetchUpdatedStats(id, reqData) {
       quandl,
     } = state.settings;
 
-    const symbols = reqData.selectedSymbols.split(',');
-    const urls = getQuandlUrlsFromMixed(symbols, transactions, reqData.dates, quandl);
+    const urls = getAPIUrlsFromMixed(
+      reqData.selectedSymbols,
+      transactions,
+      reqData.dates,
+      quandl
+    );
 
     return dispatch({
       type: ActionTypes.FETCH_STATS,

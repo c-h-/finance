@@ -3,8 +3,42 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  StatBlocks: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    flexWrap: 'wrap',
+  },
+  StatBlock: {
+    width: 300,
+    marginHorizontal: 10,
+    marginTop: 20,
+  },
+  StatBlockHeader: {
+    fontSize: 22,
+  },
+  StatBlockData: {
+    width: '50%',
+    marginVertical: 10,
+  },
+  StatBlockMetric: {
+    fontSize: 16,
+  },
   emptyContainer: {
     marginVertical: 40,
+  },
+  option: {
+    flexDirection: 'row',
+    alignItems: 'space-between',
+    width: '100%',
+    flexGrow: 1,
+  },
+  optionLabel: {
+    fontWeight: 'bold',
+    flexGrow: 1,
+  },
+  optionName: {
+    color: '#95a5a6',
+    fontWeight: 'normal',
   },
   container: {
     flexGrow: 1,

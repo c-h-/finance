@@ -8,6 +8,7 @@ import transStructure from '../constants/transactionStructure.json';
 import {
   setFetching,
 } from '../views/Performance/actions';
+import symbolTypes from '../constants/symbolTypes.json';
 
 const dispatch = self.postMessage;
 
@@ -34,6 +35,17 @@ const QUANDL_CURRENCY_COLUMNS = {
   LAST: 4,
   VOLUME: 5,
 };
+const YQL_STOCK_COLUMNS = {
+  DATE: 'Date',
+  OPEN: 'Open',
+  ADJ_CLOSE: 'Adj_Close',
+  CLOSE: 'Close',
+  HIGH: 'High',
+  LOW: 'Low',
+  OPEN: 'Open',
+  SYMBOL: 'Symbol',
+  VOLUME: 'Volume',
+}
 
 const CURRENCIES = ['USD', 'ETH', 'BTC'];
 
@@ -41,12 +53,16 @@ const CURRENCIES = ['USD', 'ETH', 'BTC'];
  * Perform expensive data shaping here in reducer to save the main thread's framerate
  */
 function shapeResponse(data, symbol) {
+  const t = symbol.indexOf(SYM_DELIMETER) > -1 ? symbol.split(SYM_DELIMETER) : symbol;
+  const symbolParts = {
+    type: Array.isArray(t) ? t[0] : symbolTypes.USER_INPUT,
+    symbol: Array.isArray(t) ? t[1] : symbol,
+  };
+  const valueColName = `${symbolParts.type}${SYM_DELIMETER}${symbolParts.symbol}`;
   if (data && data.dataset && data.dataset.data && data.dataset.column_names) {
+    // Quandl format
     let valueColumnToKeep;
     let colsDef;
-    const valueColName = CURRENCIES.indexOf(symbol) === -1
-      ? (data.dataset.dataset_code || 'value')
-      : symbol;
     switch (data.dataset.database_code) {
       case 'BAVERAGE':
         valueColumnToKeep = QUANDL_CURRENCY_COLUMNS.AVG_24;
@@ -54,7 +70,7 @@ function shapeResponse(data, symbol) {
         break;
       case 'WIKI':
       default:
-        valueColumnToKeep = QUANDL_STOCK_COLUMNS.OPEN;
+        valueColumnToKeep = QUANDL_STOCK_COLUMNS.CLOSE;
         colsDef = QUANDL_STOCK_COLUMNS;
         break;
     }
@@ -62,6 +78,17 @@ function shapeResponse(data, symbol) {
       return {
         date: row[colsDef.DATE],
         [valueColName]: row[valueColumnToKeep],
+      };
+    });
+    shaped.columns = ['date', valueColName];
+    return shaped;
+  }
+  else if (data && data.query && data.query.results && data.query.results.quote) {
+    // YQL historical format
+    const shaped = data.query.results.quote.map((quote) => {
+      return {
+        date: quote[YQL_STOCK_COLUMNS.DATE],
+        [valueColName]: quote[YQL_STOCK_COLUMNS.CLOSE],
       };
     });
     shaped.columns = ['date', valueColName];
@@ -262,31 +289,39 @@ function processPortfolios(normalizedData, payload) {
   const symbolWhitelist = ['date'];
 
   symbols.forEach((group) => {
-    if (group.indexOf(SYM_DELIMETER) > -1) {
+    if (group.value && group.value.indexOf(`${symbolTypes.PORTFOLIO}${SYM_DELIMETER}`) === 0) {
       // looking at a portfolio
       // need to calculate when values are positive and accumulate those sums.
       // once we have sums for every data point, add a new key to normalizedData.shapedData
       // for the portfolio
-      const portfolioSymbols = getSymbols([group], transactions);
-      const portfolioID = parseInt(group.split(SYM_DELIMETER)[1], 10);
+      const portfolioSymbols = getSymbols([group.value], transactions);
+      const portfolioID = parseInt(group.value.split(SYM_DELIMETER)[1], 10);
       const portfolioName = portfolios.find((port) => {
         return port.id === portfolioID;
       }).name;
       // make sure we don't delete the portfolio
       symbolWhitelist.push(portfolioName);
-
       normalizedData.shapedData.forEach((point, _i) => {
         let portfolioValue = 0;
         portfolioSymbols.forEach((symbol) => {
+          const tickerSymbol = symbol.indexOf(SYM_DELIMETER) > -1
+            ? symbol.slice(symbol.indexOf(SYM_DELIMETER) + SYM_DELIMETER.length)
+            : symbol;
+          const tickerType = symbol.indexOf(SYM_DELIMETER) > -1
+            ? symbol.slice(0, symbol.indexOf(SYM_DELIMETER))
+            : symbolTypes.USER_INPUT;
           // for each symbol, grab the value at the point and then apply portfolio transaction
           // transformations to the value
           const symbolTransactions = transactions.filter((trans) => {
-            return trans[transStructure.SYMBOL].toUpperCase() === symbol
+            return trans[transStructure.SYMBOL].toUpperCase() === tickerSymbol
               && trans[transStructure.PID] === portfolioID
               && trans[transStructure.DATE] <= point.date;
           }).sort((a, b) => a[transStructure.DATE] - b[transStructure.DATE]);
 
-          if (CURRENCIES.indexOf(symbol) > -1) {
+          if (
+            (tickerType === symbolTypes.CURRENCY || tickerType === symbolTypes.USER_INPUT)
+            && CURRENCIES.indexOf(tickerSymbol) > -1
+          ) {
             // process currency
             const amountAtDate = symbolTransactions.reduce((acc, curr) => {
               return curr[transStructure.AMOUNT]
@@ -308,7 +343,7 @@ function processPortfolios(normalizedData, payload) {
             }
           }
           else {
-            // process equity
+            // process stocks (ignore etfs)
             // the shares owned at this point's date for the portfolio
             const sharesAtDate = symbolTransactions.reduce((acc, curr) => {
               return curr[transStructure.SHARES]
@@ -330,11 +365,11 @@ function processPortfolios(normalizedData, payload) {
     }
     else {
       // looking at a basic symbol
-      symbolWhitelist.push(group.toUpperCase());
+      symbolWhitelist.push(group.value.toUpperCase());
     }
   });
 
-  // remove unused basic symbols from normalizedData
+  // remove unused basic symbol45s from normalizedData
   // do this before adding more data to normalizedData
   normalizedData.shapedData.forEach((point) => {
     for (const key in point) {

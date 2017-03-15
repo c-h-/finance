@@ -54,20 +54,22 @@ class Settings extends Component {
     };
   }
   handleRobinhoodClick = () => {
-    const r = new Robinhood({
-      username: this.state.rh_username,
-      password: this.state.rh_password,
-    });
-    r.then(() => {
-      // connected
-      r.getQuote('goog').then((body) => {
-        console.log('r body', body);
-      }, (err) => {
-        console.log('quote error', err);
+    if (Robinhood) {
+      const r = new Robinhood({
+        username: this.state.rh_username,
+        password: this.state.rh_password,
       });
-    }, (err) => {
-      console.error('error', err);
-    });
+      r.then(() => {
+        // connected
+        r.getQuote('goog').then((body) => {
+          console.log('r body', body);
+        }, (err) => {
+          console.log('quote error', err);
+        });
+      }, (err) => {
+        console.error('error', err);
+      });
+    }
   }
   render() {
     const {
@@ -91,31 +93,36 @@ class Settings extends Component {
             onChange={this.handleChange('quandl')}
           />
           <Text style={styles.Text} />
-          <h4>Robinhood</h4>
-          <Text style={styles.Text}>Robinhood credentials</Text>
-          <TextInput
-            name="username"
-            style={styles.TextInput}
-            value={rh_username || ''}
-            onBlur={this.handleBlur('rh_username')}
-            onChange={this.handleChange('rh_username')}
-          />
-          <TextInput
-            name="password"
-            style={styles.TextInput}
-            value={rh_password || ''}
-            onBlur={this.handleBlur('rh_password')}
-            onChange={this.handleChange('rh_password')}
-            secureTextEntry
-          />
-          <View
-            role="button"
-            className="pt-button pt-button-primary"
-            style={styles.button}
-            onClick={this.handleRobinhoodClick}
-          >
-            Test Robinhood
-          </View>
+          {
+            Robinhood &&
+            <View>
+              <h4>Robinhood</h4>
+              <Text style={styles.Text}>Robinhood credentials</Text>
+              <TextInput
+                name="username"
+                style={styles.TextInput}
+                value={rh_username || ''}
+                onBlur={this.handleBlur('rh_username')}
+                onChange={this.handleChange('rh_username')}
+              />
+              <TextInput
+                name="password"
+                style={styles.TextInput}
+                value={rh_password || ''}
+                onBlur={this.handleBlur('rh_password')}
+                onChange={this.handleChange('rh_password')}
+                secureTextEntry
+              />
+              <View
+                role="button"
+                className="pt-button pt-button-primary"
+                style={styles.button}
+                onClick={this.handleRobinhoodClick}
+              >
+                Test Robinhood
+              </View>
+            </View>
+          }
         </View>
       </View>
     );

@@ -15,3 +15,8 @@ AppRegistry.registerComponent('UniversalNativeBoilerplate', () => ClientApp);
 AppRegistry.runApplication('UniversalNativeBoilerplate', {
   rootTag: document.getElementById('container'),
 });
+
+var credentials = {
+    username: '',
+    password: ''
+};

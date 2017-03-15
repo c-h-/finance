@@ -24,7 +24,7 @@ const assetDefs = defs.defs;
 
 const initState = {
   type: assetDefs[0].enum,
-  t_type: 0 ,
+  t_type: 0,
   notes: null,
   date: null,
   amount: null,
