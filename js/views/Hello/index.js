@@ -72,12 +72,10 @@ const Hello = () => {
         </Text>
 
         <h3><Icon name="cloud" /> Data Sources</h3>
-        <Text style={styles.Text}>There are two ways to get the data this app requires. Getting a
-          free Quandl API Key gives the app access to US Stock, Bitcoin, and Ethereum closing
-          prices. For access to ETFs and importing your Robinhood portfolio, you can lend this app
-          your Robinhood account credentials. Keep in mind that your account credentials give full
-          access to your account - protect them. This app uses the Robinhood API unofficially and is
-          subject to stop working at any time.
+        <Text style={styles.Text}>This app pulls data from a variety of APIs. Where possible the app
+          APIs that expressly allow the data to be accessed in the way this app requires (Quandl,
+          Bing APIs). See the settings page to configure API keys. Other APIs supplement the
+          coverage that Quandl and Bing provide.
         </Text>
       </View>
     </View>

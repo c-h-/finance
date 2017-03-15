@@ -13,6 +13,7 @@ import {
 
 import SceneContainer from './SceneContainer';
 import CustomTabBar from '../CustomTabBar';
+import Browser from '../Browser';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,6 +21,15 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     flexShrink: 0,
     alignSelf: 'stretch',
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    width: '100%',
+  },
+  innerContainer: {
+    flexGrow: 1,
+    flexShrink: 1,
+    maxWidth: '100%',
+    maxHeight: '100vh',
   },
 });
 
@@ -67,14 +77,19 @@ class AppFrame extends Component {
       <View
         style={styles.container}
       >
-        <CustomTabBar
-          navigation={navigation}
-          router={router}
-          tabBarOptions={tabBarOptions}
-        />
-        <SceneContainer>
-          <Scene navigation={childNavigation} />
-        </SceneContainer>
+        <View
+          style={styles.innerContainer}
+        >
+          <CustomTabBar
+            navigation={navigation}
+            router={router}
+            tabBarOptions={tabBarOptions}
+          />
+          <SceneContainer>
+            <Scene navigation={childNavigation} />
+          </SceneContainer>
+        </View>
+        <Browser />
       </View>
     );
   }

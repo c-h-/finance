@@ -16,11 +16,15 @@ import {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
+    flexShrink: 1,
+    overflowY: 'auto',
   },
   loadingContainer: {
     flexGrow: 1,
+    flexShrink: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    overflowY: 'auto',
   },
   text: {
     color: '#5C7080',

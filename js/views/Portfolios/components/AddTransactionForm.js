@@ -186,7 +186,7 @@ class AddTransactionForm extends Component {
           isOpen={isOpen}
         >
           <View
-            role="button"
+            accessibilityRole="button"
             className="pt-button"
             style={styles.button}
           >
@@ -230,7 +230,7 @@ class AddTransactionForm extends Component {
         >
           <View
             onClick={this.saveTransaction}
-            role="button"
+            accessibilityRole="button"
             className="pt-button pt-icon-endorsed pt-intent-primary"
           >
             Save
@@ -239,7 +239,7 @@ class AddTransactionForm extends Component {
             typeof onClose === 'function' &&
             <View
               onClick={this.handleClose}
-              role="button"
+              accessibilityRole="button"
               className="pt-button"
             >
               Close

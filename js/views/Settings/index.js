@@ -16,7 +16,6 @@ import styles from './styles';
 import {
   updateSetting,
 } from './actions';
-import Robinhood from '../../utils/Robinhood';
 
 class Settings extends Component {
   static propTypes = {
@@ -25,8 +24,7 @@ class Settings extends Component {
   }
   state = {
     quandl: '',
-    rh_username: '',
-    rh_password: '',
+    bing_search: '',
   }
   componentWillMount() {
     this.setState({
@@ -53,29 +51,10 @@ class Settings extends Component {
       dispatch(updateSetting(key, e.target.value));
     };
   }
-  handleRobinhoodClick = () => {
-    if (Robinhood) {
-      const r = new Robinhood({
-        username: this.state.rh_username,
-        password: this.state.rh_password,
-      });
-      r.then(() => {
-        // connected
-        r.getQuote('goog').then((body) => {
-          console.log('r body', body);
-        }, (err) => {
-          console.log('quote error', err);
-        });
-      }, (err) => {
-        console.error('error', err);
-      });
-    }
-  }
   render() {
     const {
       quandl,
-      rh_username,
-      rh_password,
+      bing_search,
     } = this.state;
     return (
       <View style={styles.container}>
@@ -93,36 +72,16 @@ class Settings extends Component {
             onChange={this.handleChange('quandl')}
           />
           <Text style={styles.Text} />
-          {
-            Robinhood &&
-            <View>
-              <h4>Robinhood</h4>
-              <Text style={styles.Text}>Robinhood credentials</Text>
-              <TextInput
-                name="username"
-                style={styles.TextInput}
-                value={rh_username || ''}
-                onBlur={this.handleBlur('rh_username')}
-                onChange={this.handleChange('rh_username')}
-              />
-              <TextInput
-                name="password"
-                style={styles.TextInput}
-                value={rh_password || ''}
-                onBlur={this.handleBlur('rh_password')}
-                onChange={this.handleChange('rh_password')}
-                secureTextEntry
-              />
-              <View
-                role="button"
-                className="pt-button pt-button-primary"
-                style={styles.button}
-                onClick={this.handleRobinhoodClick}
-              >
-                Test Robinhood
-              </View>
-            </View>
-          }
+
+          <h4>Bing</h4>
+          <Text style={styles.Text}>Bing Search API key</Text>
+          <TextInput
+            style={styles.TextInput}
+            value={bing_search || ''}
+            onBlur={this.handleBlur('bing_search')}
+            onChange={this.handleChange('bing_search')}
+          />
+          <Text style={styles.Text} />
         </View>
       </View>
     );

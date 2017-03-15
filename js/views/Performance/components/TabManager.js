@@ -88,7 +88,7 @@ class TabManager extends Component {
           style={styles.buttonContainer}
         >
           <View
-            role="button"
+            accessibilityRole="button"
             className="pt-button pt-icon-add pt-intent-primary"
             onClick={this.handleAdd}
           >

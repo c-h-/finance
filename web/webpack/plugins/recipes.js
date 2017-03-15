@@ -12,7 +12,7 @@ const optionalPlugins = [
   {
     recipe: 'hints',
     name: 'preload-webpack-plugin',
-    prodOnly: false,
+    prodOnly: true,
     options: {
       rel: 'preload',
       as: 'script',

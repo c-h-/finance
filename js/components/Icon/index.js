@@ -5,9 +5,10 @@ import RNVIcon from 'react-native-vector-icons/MaterialIcons';
 
 import styles from './styles';
 
-const Icon = ({ name, size, color, style }) => {
+const Icon = ({ name, size, color, style, ...props }) => {
   return (
     <RNVIcon
+      {...props}
       name={name}
       size={size || 24}
       color={color || '#000'}

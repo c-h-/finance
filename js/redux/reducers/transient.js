@@ -5,6 +5,8 @@ import ActionTypes from '../action_types.json';
 const initState = {
   appReady: false,
   fetching: {},
+  news: {},
+  browserRoute: null,
 };
 
 /**
@@ -12,6 +14,24 @@ const initState = {
  */
 export default function transient(state = initState, action) {
   switch (action.type) {
+    case ActionTypes.NAVIGATE_EXTERNAL: {
+      return {
+        ...state,
+        browserRoute: action.payload.href,
+      };
+    }
+    case ActionTypes.RECEIVE_HEADLINES: {
+      if (!action.payload.symbol || !action.payload.data) {
+        return state;
+      }
+      return {
+        ...state,
+        news: {
+          ...state.news,
+          [action.payload.symbol]: action.payload.data,
+        },
+      };
+    }
     case ActionTypes.ERROR: {
       // SPECIAL CASE where we need to dispatch the toast but not actually save anything
       Toaster.show({

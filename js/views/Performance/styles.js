@@ -3,6 +3,9 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  headline: {
+    marginVertical: 4,
+  },
   StatBlocks: {
     flexDirection: 'row',
     justifyContent: 'center',

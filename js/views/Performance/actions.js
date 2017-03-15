@@ -1,8 +1,12 @@
 import getAPIUrlsFromMixed from '../../utils/getAPIUrlsFromMixed';
 
 import ActionTypes from '../../redux/action_types.json';
-import misc from '../../constants/misc.json';
-
+import {
+  apiTypes,
+  SYM_DELIMETER,
+} from '../../constants/misc.json';
+import symbolTypes from '../../constants/symbolTypes.json';
+import fetchBingSearchAPI from '../../utils/fetchBingSearchAPI';
 
 /**
  * Adds a new comparison tab
@@ -76,12 +80,52 @@ export function fetchUpdatedStats(id, reqData) {
     return dispatch({
       type: ActionTypes.FETCH_STATS,
       payload: {
-        apiType: misc.apiTypes.QUANDL,
+        apiType: apiTypes.QUANDL,
         urls,
       },
       meta: {
         WebWorker: true,
       },
     });
+  };
+}
+
+/**
+ * Fetches headlines for a symbol
+ * @param {String} symbol - the symbol to fetch
+ */
+export function fetchHeadlines(_symbols) {
+  return (dispatch, getState) => {
+    const state = getState();
+    const key = state
+      && state.settings
+      && state.settings.bing_search
+      ? state.settings.bing_search
+      : '';
+    if (!key || !key.length) {
+      dispatch({
+        type: ActionTypes.ERROR,
+        payload: {
+          msg: 'Please provide a Bing Search API key in Settings',
+        },
+      });
+      return;
+    }
+    fetchBingSearchAPI(dispatch, key, _symbols.map((_symbol) => {
+      const symbol = _symbol;
+      let val = symbol.value;
+      if (val.indexOf(SYM_DELIMETER) > -1) {
+        if (val.indexOf(symbolTypes.PORTFOLIO) === 0) {
+          return null;
+        }
+        val = val.slice(val.indexOf(SYM_DELIMETER) + SYM_DELIMETER.length);
+      }
+      return [
+        symbol.value,
+        'https://api.cognitive.microsoft.com/bing/v5.0/news/'
+          + `search?q=${encodeURIComponent(`${val} ${symbol.name || ''}`)}`
+          + '&count=5&offset=0&mkt=en-us&safeSearch=Moderate',
+      ];
+    }).filter(url => url));
   };
 }

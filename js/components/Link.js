@@ -11,6 +11,7 @@ import {
 import {
   NavigationActions,
 } from 'react-navigation';
+import ActionTypes from '../redux/action_types.json';
 
 /**
  * A "link" for wiring up buttons to routes and the internet
@@ -31,6 +32,14 @@ class Link extends Component {
       href,
     } = this.props;
     if (typeof href === 'string') {
+      if (href.indexOf('://') > -1) {
+        return {
+          type: ActionTypes.NAVIGATE_EXTERNAL,
+          payload: {
+            href,
+          },
+        };
+      }
       return NavigationActions.navigate({
         routeName: href,
       });

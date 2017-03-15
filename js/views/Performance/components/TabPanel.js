@@ -303,7 +303,7 @@ class TabPanel extends Component {
     return (
       <View>
         <View
-          role="navigation"
+          accessibilityRole="navigation"
           style={styles.toolbarContainer}
         >
           <View
@@ -350,7 +350,7 @@ class TabPanel extends Component {
               position={Blueprint.Position.BOTTOM}
             >
               <View
-                role="button"
+                accessibilityRole="button"
                 className="pt-button"
                 style={styles.button}
               >
@@ -376,7 +376,7 @@ class TabPanel extends Component {
             </select>
           </View>
           <View
-            role="button"
+            accessibilityRole="button"
             className="pt-button pt-button-primary"
             style={styles.button}
             onClick={this.handleRefresh}

@@ -170,7 +170,7 @@ class PortfolioEditor extends Component {
           style={styles.buttonContainer}
         >
           <View
-            role="button"
+            accessibilityRole="button"
             className="pt-button pt-icon-add"
             onClick={this.openOverlay}
           >

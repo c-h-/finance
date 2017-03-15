@@ -6,6 +6,7 @@ import ActionTypes from '../../redux/action_types.json';
 
 const initState = {
   quandl: '',
+  bing_search: '',
 };
 
 export default function settings(state = initState, action) {

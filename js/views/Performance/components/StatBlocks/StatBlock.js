@@ -4,6 +4,7 @@ import {
   View,
 } from 'react-native';
 
+import Link from '../../../../components/Link';
 import {
   SYM_DELIMETER,
 } from '../../../../constants/misc.json';
@@ -32,6 +33,7 @@ const StatBlock = (props) => {
     col,
     cols,
     data,
+    headlines,
   } = props;
   const color = colors[cols.indexOf(col) % colors.length];
   if (!data || !data[0] || !data[1]) {
@@ -49,6 +51,13 @@ const StatBlock = (props) => {
   } : {
     color: metricColors.negative,
   };
+  let formattedHeadlines = [];
+  if (
+    headlines
+    && headlines.value
+  ) {
+    formattedHeadlines = headlines.value;
+  }
   return (
     <View style={styles.StatBlock} className="pt-card pt-elevation-1">
       <Text style={[styles.StatBlockHeader, { color }]}>{getTitle(col)}</Text>
@@ -70,6 +79,24 @@ const StatBlock = (props) => {
           <Text style={styles.StatBlockMetric}>${endVal}</Text>
         </View>
       </View>
+      <View style={styles.headlines}>
+        {
+          formattedHeadlines &&
+          formattedHeadlines.filter((_, i) => i < 5).map((headline) => {
+            return (
+              <View key={headline.url} style={styles.headline}>
+                <Link href={headline.url}>{headline.name}</Link>
+                {/*<Text
+                  accessibilityRole="link"
+                  onClick={this.openLink(headline.url)}
+                >
+                  {headline.name}
+                </Text>*/}
+              </View>
+            );
+          })
+        }
+      </View>
     </View>
   );
 };
@@ -78,6 +105,7 @@ StatBlock.propTypes = {
   col: PropTypes.string,
   cols: PropTypes.array,
   data: PropTypes.array,
+  headlines: PropTypes.object,
 };
 
 export default StatBlock;

@@ -129,7 +129,7 @@ class PortfolioManager extends Component {
         >
           <View
             onClick={this.addPortfolio}
-            role="button"
+            accessibilityRole="button"
             className="pt-button pt-icon-endorsed pt-intent-primary"
           >
             Save
@@ -154,7 +154,7 @@ class PortfolioManager extends Component {
             isOpen={isOpen}
           >
             <View
-              role="button"
+              accessibilityRole="button"
               className="pt-button pt-icon-add pt-intent-primary"
             >
               Add a Portfolio

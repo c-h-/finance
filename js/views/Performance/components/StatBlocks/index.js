@@ -6,9 +6,13 @@ import {
   connect,
 } from 'react-redux';
 import {
-  Text,
   View,
 } from 'react-native';
+import isEqual from 'lodash.isequal';
+
+import {
+  fetchHeadlines,
+} from '../../actions';
 import StatBlock from './StatBlock';
 
 import styles from '../../styles';
@@ -16,29 +20,70 @@ import styles from '../../styles';
 class StatBlocks extends Component {
   static propTypes = {
     perfReducer: PropTypes.object,
+    news: PropTypes.object,
+    dispatch: PropTypes.func,
   }
-  static defaultProps = {
-    width: 0,
+  static getSymbols(tabs, selectedTabID) {
+    const selectedData = tabs.find(tab => tab.id === selectedTabID);
+    return selectedData
+      && selectedData.data
+      && selectedData.data.selectedSymbols
+      ? selectedData.data.selectedSymbols // .map(symbol => symbol.value)
+      : [];
+  }
+  constructor(props) {
+    super();
+    this.checkHeadlines(props);
+  }
+  componentWillReceiveProps(nextProps) {
+    this.checkHeadlines(nextProps, this.props);
+  }
+  /**
+   * Checks if we need to fetch headlines for a symbol
+   */
+  checkHeadlines = (props, oldProps) => {
+    const {
+      perfReducer,
+      news,
+      dispatch,
+    } = props;
+    const {
+      selectedTabID,
+      tabs,
+    } = perfReducer;
+    const symbols = StatBlocks.getSymbols(tabs, selectedTabID);
+
+    // bounce if symbols haven't changed
+    if (oldProps) {
+      const oldSymbols = StatBlocks.getSymbols(oldProps.perfReducer.tabs, selectedTabID);
+      if (isEqual(symbols, oldSymbols)) {
+        return;
+      }
+    }
+    const toFetch = symbols.filter(symbol => !news[symbol.value]);
+    if (toFetch.length) {
+      dispatch(fetchHeadlines(toFetch));
+    }
   }
   render() {
+    const {
+      news,
+      perfReducer,
+    } = this.props;
     const {
       chartData,
       selectedTabID,
       tabs,
-    } = this.props.perfReducer;
-    const selectedData = tabs.find(tab => tab.id === selectedTabID);
-    let dates = null;
-    if (selectedData && selectedData.data) {
-      dates = selectedData.data.dates;
+    } = perfReducer;
+    const symbols = StatBlocks.getSymbols(tabs, selectedTabID).map(symbol => symbol.value);
+    if (!symbols || !symbols.length) {
+      return null;
     }
+
+    const selectedData = tabs.find(tab => tab.id === selectedTabID);
     let selectedChartData;
-    let seriesCols;
     if (chartData && chartData[selectedData.id] && chartData[selectedData.id].shapedData) {
       selectedChartData = chartData[selectedData.id].shapedData;
-      seriesCols = chartData[selectedData.id].columns.filter(col => col !== 'date').sort();
-    }
-    if (!dates || !selectedChartData || selectedChartData.length === 0) {
-      return null;
     }
     const selectedBlockData = [
       selectedChartData[0],
@@ -47,14 +92,15 @@ class StatBlocks extends Component {
     return (
       <View style={styles.StatBlocks}>
         {
-          seriesCols.length
-          && seriesCols.map((col) => {
+          symbols.length
+          && symbols.map((col) => {
             return (
               <StatBlock
                 key={col}
                 col={col}
-                cols={seriesCols}
+                cols={symbols}
                 data={selectedBlockData}
+                headlines={news[col]}
               />
             );
           })
@@ -67,6 +113,7 @@ class StatBlocks extends Component {
 function mapStateToProps(state) {
   return {
     perfReducer: state.perfReducer,
+    news: state.transient.news || {},
   };
 }
 
