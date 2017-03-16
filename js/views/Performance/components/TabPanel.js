@@ -303,110 +303,112 @@ class TabPanel extends Component {
     }
 
     return (
-      <View className="pt-card pt-elevation-1">
-        <View
-          accessibilityRole="navigation"
-          style={styles.toolbarContainer}
-        >
+      <View>
+        <View className="pt-card pt-elevation-1">
           <View
-            style={[styles.SelectContainer, styles.toolbarChild]}
+            accessibilityRole="navigation"
+            style={styles.toolbarContainer}
           >
-            <Text style={styles.Text}>Symbols and/or Portfolios</Text>
-            {/*
-            instead of options, use loadOptions for async option loading.
-            https://github.com/JedWatson/react-select#async-options
-            old way: options={this.getPortfolios()}
-            */}
-            <AsyncCreatable
-              promptTextCreator={TabPanel.promptTextCreator}
-              newOptionCreator={TabPanel.newOptionCreator}
-              valueRenderer={TabPanel.valueRenderer}
-              loadOptions={this.getOptions}
-              value={selectedSymbols}
-              onChange={this.setSelected}
-              placeholder="Add ticker symbol(s) and/or portfolio(s)..."
-              noResultsText="Nothing Found"
-              addLabelText="{label}"
-              delimiter={DELIMITER}
-              optionRenderer={TabPanel.optionRenderer}
-              autoBlur
-              clearable
-              multi
-            />
-          </View>
-          <View style={styles.toolbarChild}>
-            <Text style={styles.Text}>Date Range</Text>
-            <Popover
-              content={
-                <DateRangePicker
-                  value={dates}
-                  onChange={this.handleDateChange}
-                  maxDate={now}
-                  allowSingleDayRange={false}
-                />
-              }
-              interactionKind={PopoverInteractionKind.CLICK}
-              onClose={this.closePopover}
-              onInteraction={this.openPopover}
-              isOpen={isOpen}
-              position={Blueprint.Position.BOTTOM}
-            >
-              <View
-                accessibilityRole="button"
-                className="pt-button"
-                style={styles.button}
-              >
-                {toRender}
-              </View>
-            </Popover>
-          </View>
-          <View style={styles.toolbarChild}>
-            <Text style={styles.Text}>Chart Mode</Text>
-            <select
-              onChange={this.handleModeChange}
-              value={mode}
-              style={{
-                borderColor: '#999',
-                borderWidth: 1,
-                borderStyle: 'solid',
-                padding: '4px 8px',
-                height: 35,
-              }}
-            >
-              <option value={modes.SUM}>Sum</option>
-              <option value={modes.COMPARE}>Compare</option>
-            </select>
-          </View>
-          <View
-            accessibilityRole="button"
-            className="pt-button pt-button-primary"
-            style={styles.button}
-            onClick={this.handleRefresh}
-          >
-            Compute
-          </View>
-        </View>
-        {
-          numFetching > 0 &&
-          <View style={{ position: 'relative' }}>
             <View
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                zIndex: 1,
-              }}
+              style={[styles.SelectContainer, styles.toolbarChild]}
             >
-              <ProgressBar
-                intent={Blueprint.Intent.PRIMARY}
-                value={1 - (numFetching / totalFetching)}
+              <Text style={styles.Text}>Symbols and/or Portfolios</Text>
+              {/*
+              instead of options, use loadOptions for async option loading.
+              https://github.com/JedWatson/react-select#async-options
+              old way: options={this.getPortfolios()}
+              */}
+              <AsyncCreatable
+                promptTextCreator={TabPanel.promptTextCreator}
+                newOptionCreator={TabPanel.newOptionCreator}
+                valueRenderer={TabPanel.valueRenderer}
+                loadOptions={this.getOptions}
+                value={selectedSymbols}
+                onChange={this.setSelected}
+                placeholder="Add ticker symbol(s) and/or portfolio(s)..."
+                noResultsText="Nothing Found"
+                addLabelText="{label}"
+                delimiter={DELIMITER}
+                optionRenderer={TabPanel.optionRenderer}
+                autoBlur
+                clearable
+                multi
               />
             </View>
+            <View style={styles.toolbarChild}>
+              <Text style={styles.Text}>Date Range</Text>
+              <Popover
+                content={
+                  <DateRangePicker
+                    value={dates}
+                    onChange={this.handleDateChange}
+                    maxDate={now}
+                    allowSingleDayRange={false}
+                  />
+                }
+                interactionKind={PopoverInteractionKind.CLICK}
+                onClose={this.closePopover}
+                onInteraction={this.openPopover}
+                isOpen={isOpen}
+                position={Blueprint.Position.BOTTOM}
+              >
+                <View
+                  accessibilityRole="button"
+                  className="pt-button"
+                  style={styles.button}
+                >
+                  {toRender}
+                </View>
+              </Popover>
+            </View>
+            <View style={styles.toolbarChild}>
+              <Text style={styles.Text}>Chart Mode</Text>
+              <select
+                onChange={this.handleModeChange}
+                value={mode}
+                style={{
+                  borderColor: '#999',
+                  borderWidth: 1,
+                  borderStyle: 'solid',
+                  padding: '4px 8px',
+                  height: 35,
+                }}
+              >
+                <option value={modes.SUM}>Sum</option>
+                <option value={modes.COMPARE}>Compare</option>
+              </select>
+            </View>
+            <View
+              accessibilityRole="button"
+              className="pt-button pt-button-primary"
+              style={styles.button}
+              onClick={this.handleRefresh}
+            >
+              Compute
+            </View>
           </View>
-        }
-        { /* Route passing here gets the component to re-render so the chart updates */ }
-        <ChartContainer route={route} />
+          {
+            numFetching > 0 &&
+            <View style={{ position: 'relative' }}>
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  zIndex: 1,
+                }}
+              >
+                <ProgressBar
+                  intent={Blueprint.Intent.PRIMARY}
+                  value={1 - (numFetching / totalFetching)}
+                />
+              </View>
+            </View>
+          }
+          { /* Route passing here gets the component to re-render so the chart updates */ }
+          <ChartContainer route={route} />
+        </View>
         <StatBlocks />
       </View>
     );
