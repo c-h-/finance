@@ -58,7 +58,7 @@ class TabManager extends Component {
                     content={(
                       <View className="pt-card">
                         <View
-                          onClick={this.deleteComparison(tab.id)}
+                          onClick={this.deleteTab(tab.id)}
                           accessibilityRole="button"
                           className="pt-button pt-intent-danger"
                         >
@@ -92,7 +92,7 @@ class TabManager extends Component {
       );
     });
   }
-  deleteComparison = (id) => {
+  deleteTab = (id) => {
     return () => {
       const {
         dispatch,

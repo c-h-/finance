@@ -11,7 +11,7 @@ import transStructure from '../../constants/transactionStructure.json';
 const assetDefs = defs.defs;
 
 const initState = {
-  rows: [
+  tabs: [
     {
       name: 'My Portfolio',
       createdAt: new Date().getTime(),
@@ -32,13 +32,13 @@ export default function portfolios(state = initState, action) {
     }
     case ActionTypes.ADD_PORTFOLIO: {
       const {
-        rows,
+        tabs,
       } = state;
-      const newID = rows.length ? Math.max(...rows.map(row => row.id)) + 1 : 1;
+      const newID = tabs.length ? Math.max(...tabs.map(row => row.id)) + 1 : 1;
       return {
         ...state,
-        rows: [
-          ...rows,
+        tabs: [
+          ...tabs,
           {
             id: newID,
             name: action.payload.name,
@@ -46,6 +46,20 @@ export default function portfolios(state = initState, action) {
           },
         ],
       };
+    }
+    case ActionTypes.REMOVE_PORTFOLIO: {
+      const id = action.payload.id;
+      if (id) {
+        const newTabs = state.tabs.filter(tab => tab.id !== id);
+        return {
+          ...state,
+          tabs: newTabs,
+          selectedTabID: id !== state.selectedTabID
+            ? state.selectedTabID
+            : newTabs[0].id,
+        };
+      }
+      return state;
     }
     case ActionTypes.SWITCH_TABS: {
       if (action.payload.reducer === 'portfolios') {

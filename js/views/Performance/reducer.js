@@ -41,7 +41,7 @@ export default function perfReducer(state = initState, action) {
           tabs: newTabs,
           selectedTabID: id !== state.selectedTabID
             ? state.selectedTabID
-            : newTabs[0].id
+            : newTabs[0].id,
         };
       }
       return state;

@@ -27,13 +27,22 @@ import {
   addPortfolio,
   switchTabs,
   exportExcelDoc,
+  removePortfolio,
 } from '../actions';
-
+import Icon from '../../../components/Icon';
 import PortfolioEditor from './PortfolioEditor';
+
+const iconStyle = {
+  cursor: 'pointer',
+  textAlign: 'center',
+  top: 2,
+  position: 'relative',
+  fontSize: 18,
+};
 
 class PortfolioManager extends Component {
   static propTypes = {
-    rows: PropTypes.array,
+    tabs: PropTypes.array,
     dispatch: PropTypes.func,
     selectedTabID: PropTypes.number,
   }
@@ -43,19 +52,48 @@ class PortfolioManager extends Component {
   }
   getTabs = () => {
     const {
-      rows,
+      tabs,
     } = this.props;
     return (
       <TabList>
-        {rows.map(row => <Tab key={row.id}>{row.name}</Tab>)}
+        {tabs.map((tab, i) => {
+          return (
+            <Tab key={tab.id}>
+              <View style={styles.tabContents}>
+                {tab.name || `Comparison ${i + 1}`}
+                {
+                  tabs.length > 1 &&
+                  <Popover
+                    content={(
+                      <View className="pt-card">
+                        <View
+                          onClick={this.deleteTab(tab.id)}
+                          accessibilityRole="button"
+                          className="pt-button pt-intent-danger"
+                        >
+                          Delete
+                        </View>
+                      </View>
+                    )}
+                  >
+                    <Icon
+                      name="close"
+                      style={iconStyle}
+                    />
+                  </Popover>
+                }
+              </View>
+            </Tab>
+          );
+        })}
       </TabList>
     );
   }
   getTabPanels = () => {
     const {
-      rows,
+      tabs,
     } = this.props;
-    return rows.map((row) => {
+    return tabs.map((row) => {
       return (
         <TabPanel key={row.id}>
           <PortfolioEditor
@@ -64,6 +102,14 @@ class PortfolioManager extends Component {
         </TabPanel>
       );
     });
+  }
+  deleteTab = (id) => {
+    return () => {
+      const {
+        dispatch,
+      } = this.props;
+      dispatch(removePortfolio(id));
+    };
   }
   addPortfolio = () => {
     const {
@@ -96,9 +142,9 @@ class PortfolioManager extends Component {
   handleTabChange = (newIndex) => {
     const {
       dispatch,
-      rows,
+      tabs,
     } = this.props;
-    dispatch(switchTabs(rows[newIndex].id));
+    dispatch(switchTabs(tabs[newIndex].id));
   }
   exportExcel = () => {
     const {
@@ -112,12 +158,12 @@ class PortfolioManager extends Component {
       isOpen,
     } = this.state;
     const {
-      rows,
+      tabs,
       selectedTabID,
     } = this.props;
     let selectedTabIndex = 0;
-    for (const i in rows) {
-      if (rows[i].id === selectedTabID) {
+    for (const i in tabs) {
+      if (tabs[i].id === selectedTabID) {
         selectedTabIndex = parseInt(i, 10);
         break;
       }
@@ -190,7 +236,7 @@ class PortfolioManager extends Component {
 
 function mapStateToProps(state) {
   return {
-    rows: state.portfolios.rows || [],
+    tabs: state.portfolios.tabs || [],
     selectedTabID: state.portfolios.selectedTabID,
   };
 }

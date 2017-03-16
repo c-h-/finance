@@ -56,6 +56,19 @@ export function addPortfolio(portfolioName) {
 }
 
 /**
+ * Deletes a portfolio
+ * @param {Number} id - the id of the portfolio to remove
+ */
+export function removePortfolio(id) {
+  return {
+    type: ActionTypes.REMOVE_PORTFOLIO,
+    payload: {
+      id,
+    },
+  };
+}
+
+/**
  * Adds a transaction to a portfolio
  */
 export function addTransaction(data) {

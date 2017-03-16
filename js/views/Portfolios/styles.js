@@ -3,6 +3,10 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  tabContents: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   container: {
     flexGrow: 1,
     padding: 20,
