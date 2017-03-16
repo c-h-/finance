@@ -20,7 +20,9 @@ const styles = StyleSheet.create({
     padding: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderLeft: '1px solid rgb(235, 241, 245)',
+    borderLeftWidth: 1,
+    borderLeftStyle: 'solid',
+    borderLeftColor: 'rgb(235, 241, 245)',
   },
   buttons: {
     flexDirection: 'row',

@@ -37,7 +37,7 @@ class TabManager extends Component {
     } = this.props;
     return (
       <TabList>
-        {tabs.map((row, i) => <Tab>{`Comparison ${i + 1}`}</Tab>)}
+        {tabs.map((tab, i) => <Tab key={tab.id}>{`Comparison ${i + 1}`}</Tab>)}
       </TabList>
     );
   }
@@ -45,9 +45,9 @@ class TabManager extends Component {
     const {
       tabs,
     } = this.props;
-    return tabs.map(() => {
+    return tabs.map((tab) => {
       return (
-        <TabPanel>
+        <TabPanel key={tab.id}>
           <PerfTabPanel />
         </TabPanel>
       );

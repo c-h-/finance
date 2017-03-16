@@ -110,10 +110,12 @@ class ChartData extends Component {
     const dateDiffMS = dates[1].getTime() - dates[0].getTime();
     const dateDiffDays = dateDiffMS / 1000 / 60 / 60 / 24;
     const dateRangeIsSmall = dateDiffDays <= 90; // greater than 3 months? don't show ticks
+    const height = 400;
     return (
       <ChartCanvas
         width={width}
-        height={400}
+        height={height}
+        ratio={width / height}
         margin={{
           left: 50,
           right: 50,
@@ -174,6 +176,7 @@ class ChartData extends Component {
                 <LineSeries
                   yAccessor={d => d[col]}
                   stroke={colors[i % colors.length]}
+                  key={`line-${col}`}
                 />
               );
             })
@@ -185,6 +188,7 @@ class ChartData extends Component {
               const color = colors[i % colors.length];
               return (
                 <ScatterSeries
+                  key={`scatter-${col}`}
                   yAccessor={d => d[col]}
                   marker={markers[i % markers.length][0]}
                   markerProps={{

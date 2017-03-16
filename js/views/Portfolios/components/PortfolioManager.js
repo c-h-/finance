@@ -47,7 +47,7 @@ class PortfolioManager extends Component {
     } = this.props;
     return (
       <TabList>
-        {rows.map(row => <Tab>{row.name}</Tab>)}
+        {rows.map(row => <Tab key={row.id}>{row.name}</Tab>)}
       </TabList>
     );
   }
@@ -57,7 +57,7 @@ class PortfolioManager extends Component {
     } = this.props;
     return rows.map((row) => {
       return (
-        <TabPanel>
+        <TabPanel key={row.id}>
           <PortfolioEditor
             id={row.id}
           />

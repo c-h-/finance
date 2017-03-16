@@ -157,7 +157,10 @@ StatBlock.propTypes = {
   col: PropTypes.string,
   cols: PropTypes.array,
   data: PropTypes.array,
-  headlines: PropTypes.object,
+  headlines: PropTypes.oneOfType([
+    PropTypes.object,
+    PropTypes.bool,
+  ]),
 };
 
 export default StatBlock;

@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
   },
   option: {
     flexDirection: 'row',
-    alignItems: 'space-between',
     width: '100%',
     flexGrow: 1,
   },

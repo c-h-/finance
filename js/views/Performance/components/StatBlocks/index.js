@@ -28,7 +28,7 @@ class StatBlocks extends Component {
     return selectedData
       && selectedData.data
       && selectedData.data.selectedSymbols
-      ? selectedData.data.selectedSymbols // .map(symbol => symbol.value)
+      ? selectedData.data.selectedSymbols
       : [];
   }
   constructor(props) {
@@ -60,9 +60,11 @@ class StatBlocks extends Component {
         return;
       }
     }
-    const toFetch = symbols.filter(symbol => !news[symbol.value]);
-    if (toFetch.length) {
-      dispatch(fetchHeadlines(toFetch));
+    if (symbols && symbols.length && typeof symbols.filter === 'function') {
+      const toFetch = symbols.filter(symbol => !news[symbol.value]);
+      if (toFetch.length) {
+        dispatch(fetchHeadlines(toFetch));
+      }
     }
   }
   render() {
@@ -93,6 +95,7 @@ class StatBlocks extends Component {
       <View style={styles.StatBlocks}>
         {
           symbols.length
+          && typeof symbols.map === 'function'
           && symbols.map((col) => {
             return (
               <StatBlock
