@@ -26,6 +26,7 @@ import styles from '../styles';
 import {
   addPortfolio,
   switchTabs,
+  exportExcelDoc,
 } from '../actions';
 
 import PortfolioEditor from './PortfolioEditor';
@@ -99,6 +100,12 @@ class PortfolioManager extends Component {
     } = this.props;
     dispatch(switchTabs(rows[newIndex].id));
   }
+  exportExcel = () => {
+    const {
+      dispatch,
+    } = this.props;
+    dispatch(exportExcelDoc());
+  }
   render() {
     const {
       portfolioName,
@@ -160,6 +167,13 @@ class PortfolioManager extends Component {
               Add a Portfolio
             </View>
           </Popover>
+          <View
+            accessibilityRole="button"
+            className="pt-button pt-icon-export"
+            onClick={this.exportExcel}
+          >
+            Export all to Excel (.xlsx)
+          </View>
         </View>
         <Text style={styles.Text} />
         <Text style={styles.Text} />

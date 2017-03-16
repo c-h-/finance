@@ -13,9 +13,8 @@ const Hello = () => {
     <View style={styles.container}>
       <View className="pt-card pt-elevation-2">
         <h2>Hello!</h2>
-        <Text style={styles.Text}>Welcome to Simple Portfolio Tracker.</Text>
         <Text style={styles.Text}>
-          {'I built Simple Portfolio Tracker to show me my assets\' values in one simple place.'}
+          I built Simple Portfolio Tracker to show me divers asset values in one simple place.
         </Text>
         <Text style={styles.Text} />
 

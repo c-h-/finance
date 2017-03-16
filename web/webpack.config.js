@@ -59,6 +59,7 @@ module.exports = {
     ],
     alias: {
       'react-native': 'react-native-web',
+      './dist/cpexcel.js': '',
     },
     extensions: ['.webpack.js', '.web.js', '.js', '.json'],
   },

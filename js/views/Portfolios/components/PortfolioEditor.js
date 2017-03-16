@@ -101,7 +101,7 @@ class PortfolioEditor extends Component {
       case transStructure.T_TYPE: {
         // transaction type
         value = assetDefs
-          .find(asset => asset.enum === parseInt(selectedTransactions[rowIndex][2], 10))
+          .find(asset => asset.enum === parseInt(selectedTransactions[rowIndex][transStructure.TYPE], 10))
           .t_types.find(t_type => t_type.enum === parseInt(value, 10)).name;
         break;
       }
