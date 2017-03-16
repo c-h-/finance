@@ -55,6 +55,7 @@ class TabPanel extends Component {
     id: PropTypes.number,
     numFetching: PropTypes.number,
     totalFetching: PropTypes.number,
+    route: PropTypes.string,
   }
   /**
    * Renders a value
@@ -274,6 +275,7 @@ class TabPanel extends Component {
     const {
       numFetching,
       totalFetching,
+      route,
     } = this.props;
     const date1Valid = dates[0] && typeof dates[0] === 'object';
     const date2Valid = dates[1] && typeof dates[1] === 'object';
@@ -403,7 +405,8 @@ class TabPanel extends Component {
             </View>
           </View>
         }
-        <ChartContainer />
+        { /* Route passing here gets the component to re-render so the chart updates */ }
+        <ChartContainer route={route} />
         <StatBlocks />
       </View>
     );
@@ -415,6 +418,7 @@ function mapStateToProps(state) {
     tabs: state.perfReducer.tabs || [],
     rows: state.portfolios.rows || [],
     id: state.perfReducer.selectedTabID,
+    route: state.transient.browserRoute,
     numFetching: state.transient
       && state.transient.fetching
       && state.transient.fetching.perfReducer

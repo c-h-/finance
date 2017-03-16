@@ -54,10 +54,7 @@ class Browser extends Component {
     }
   }
   loadHandler = (ev) => {
-    console.log('Load!', ev.nativeEvent);
-  }
-  loadStartHandler = (ev) => {
-    console.log('Loading!', ev.nativeEvent);
+    // console.log('Load!', ev.nativeEvent);
   }
   refreshHandler = () => {
     if (this.iframe) {
@@ -113,7 +110,6 @@ class Browser extends Component {
         <iframe
           src={route}
           onLoad={this.loadHandler}
-          onLoadStart={this.loadStartHandler}
           style={browser}
           ref={ref => (this.iframe = ref)}
         />

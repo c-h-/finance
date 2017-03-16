@@ -106,6 +106,10 @@ class ChartData extends Component {
         </View>
       );
     }
+    // console.warn('DATE', typeof dates[0]);
+    const dateDiffMS = dates[1].getTime() - dates[0].getTime();
+    const dateDiffDays = dateDiffMS / 1000 / 60 / 60 / 24;
+    const dateRangeIsSmall = dateDiffDays <= 90; // greater than 3 months? don't show ticks
     return (
       <ChartCanvas
         width={width}
@@ -175,7 +179,8 @@ class ChartData extends Component {
             })
           }
           {
-            seriesCols.length !== 1
+            dateRangeIsSmall
+            && seriesCols.length !== 1
             && seriesCols.map((col, i) => {
               const color = colors[i % colors.length];
               return (
