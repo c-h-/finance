@@ -10,6 +10,7 @@ import {
   connect,
 } from 'react-redux';
 import {
+  Popover,
   Tab,
   Tabs,
   TabList,
@@ -21,9 +22,18 @@ import styles from '../styles';
 import {
   addNewComparison,
   switchTabs,
+  removeComparison,
 } from '../actions';
-
+import Icon from '../../../components/Icon';
 import PerfTabPanel from './TabPanel';
+
+const iconStyle = {
+  cursor: 'pointer',
+  textAlign: 'center',
+  top: 2,
+  position: 'relative',
+  fontSize: 18,
+};
 
 class TabManager extends Component {
   static propTypes = {
@@ -37,7 +47,36 @@ class TabManager extends Component {
     } = this.props;
     return (
       <TabList>
-        {tabs.map((tab, i) => <Tab key={tab.id}>{`Comparison ${i + 1}`}</Tab>)}
+        {tabs.map((tab, i) => {
+          return (
+            <Tab key={tab.id}>
+              <View style={styles.tabContents}>
+                {tab.name || `Comparison ${i + 1}`}
+                {
+                  tabs.length > 1 &&
+                  <Popover
+                    content={(
+                      <View className="pt-card">
+                        <View
+                          onClick={this.deleteComparison(tab.id)}
+                          accessibilityRole="button"
+                          className="pt-button pt-intent-danger"
+                        >
+                          Delete
+                        </View>
+                      </View>
+                    )}
+                  >
+                    <Icon
+                      name="close"
+                      style={iconStyle}
+                    />
+                  </Popover>
+                }
+              </View>
+            </Tab>
+          );
+        })}
       </TabList>
     );
   }
@@ -52,6 +91,14 @@ class TabManager extends Component {
         </TabPanel>
       );
     });
+  }
+  deleteComparison = (id) => {
+    return () => {
+      const {
+        dispatch,
+      } = this.props;
+      dispatch(removeComparison(id));
+    };
   }
   handleTabChange = (newIndex) => {
     const {

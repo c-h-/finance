@@ -3,6 +3,10 @@ import {
 } from 'react-native';
 
 const styles = StyleSheet.create({
+  tabContents: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   popover: {
     maxWidth: 300,
     padding: 10,

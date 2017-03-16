@@ -11,6 +11,7 @@ function getNewTab(id = 1) {
   return {
     id,
     data: {},
+    name: `Analysis ${id}`,
   };
 }
 
@@ -30,6 +31,20 @@ export default function perfReducer(state = initState, action) {
         ...state,
         ...action.payload.perfReducer,
       };
+    }
+    case ActionTypes.REMOVE_COMPARISON: {
+      const id = action.payload.id;
+      if (id) {
+        const newTabs = state.tabs.filter(tab => tab.id !== id);
+        return {
+          ...state,
+          tabs: newTabs,
+          selectedTabID: id !== state.selectedTabID
+            ? state.selectedTabID
+            : newTabs[0].id
+        };
+      }
+      return state;
     }
     case ActionTypes.SWITCH_TABS: {
       if (action.payload.reducer === 'perfReducer') {

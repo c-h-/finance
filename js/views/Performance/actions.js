@@ -31,6 +31,18 @@ export function saveComparison(id, newState) {
 }
 
 /**
+ * Deletes a comparison from storage
+ */
+export function removeComparison(id) {
+  return {
+    type: ActionTypes.REMOVE_COMPARISON,
+    payload: {
+      id,
+    },
+  };
+}
+
+/**
  * Set fetching
  */
 export function setFetching(modifier = 0, totalFetching) {
