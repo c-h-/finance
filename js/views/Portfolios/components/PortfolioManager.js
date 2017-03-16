@@ -177,7 +177,7 @@ class PortfolioManager extends Component {
         </View>
         <Text style={styles.Text} />
         <Text style={styles.Text} />
-        <View className="pt-card pt-elevation-1">
+        <View>
           <Tabs onChange={this.handleTabChange} selectedTabIndex={selectedTabIndex}>
             {this.getTabs()}
             {this.getTabPanels()}

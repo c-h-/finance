@@ -303,7 +303,7 @@ class TabPanel extends Component {
     }
 
     return (
-      <View>
+      <View className="pt-card pt-elevation-1">
         <View
           accessibilityRole="navigation"
           style={styles.toolbarContainer}

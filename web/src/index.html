@@ -9,6 +9,36 @@
   .Select-menu-outer {
     z-index: 500 !important;
   }
+  .pt-tab {
+    padding: 3px 10px;
+    background: #f8f8f8;
+    border-top-right-radius: 10px !important;
+    border-top-left-radius: 10px !important;
+    top: 1px;
+    z-index: 30;
+  }
+  .pt-tab-indicator-wrapper {
+    display: none;
+  }
+  .pt-tab-indicator-wrapper ~ .pt-tab[aria-selected="true"] {
+    background: #fff;
+    box-shadow: 0 0 0 1px rgba(16, 22, 26, 0.1) !important;
+    position: relative;
+    overflow: visible;
+  }
+  .pt-tab-indicator-wrapper ~ .pt-tab[aria-selected="true"]:after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    display: block;
+    background-color: #fff;
+  }
+  .pt-tab-panel {
+      margin-top: 0 !important;
+  }
   </style>
   <script>
         (function () {
