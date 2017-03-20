@@ -9,11 +9,13 @@ import {
   connect,
 } from 'react-redux';
 import {
+  Popover,
   Overlay,
 } from '@blueprintjs/core';
 import {
   Column,
   EditableCell,
+  Cell,
   Table,
 } from '@blueprintjs/table';
 
@@ -24,6 +26,7 @@ import styles from '../styles';
 import {
   addTransaction,
   editTransaction,
+  removeTransaction,
 } from '../actions';
 import AddTransactionForm from './AddTransactionForm';
 
@@ -86,6 +89,46 @@ class PortfolioEditor extends Component {
       // adjust column since the data in the store has a 0th column
       dispatch(editTransaction(rowId, PortfolioEditor.shiftColumns(col), edit));
     };
+  }
+  renderDeleteButton = (rowIndex) => {
+    const deleteHandler = () => {
+      const {
+        dispatch,
+      } = this.props;
+      const {
+        selectedTransactions,
+      } = this.state;
+      dispatch(removeTransaction(selectedTransactions[rowIndex][transStructure.ID]));
+    };
+    return (
+      <Cell style={{ padding: 0 }}>
+        <Popover
+          content={(
+            <View className="pt-card">
+              <View
+                accessibilityRole="button"
+                className="pt-button pt-intent-danger"
+                onClick={deleteHandler}
+              >
+                Confirm
+              </View>
+            </View>
+          )}
+        >
+          <View
+            accessibilityRole="button"
+            className="pt-button pt-intent-danger"
+            style={{
+              width: 150,
+              minHeight: 20,
+              lineHeight: 20,
+            }}
+          >
+            Delete
+          </View>
+        </Popover>
+      </Cell>
+    );
   }
   renderCell = (rowIndex, columnIndex) => {
     const {
@@ -166,6 +209,10 @@ class PortfolioEditor extends Component {
           <Column
             name="Notes"
             renderCell={this.renderCell}
+          />
+          <Column
+            name="Action"
+            renderCell={this.renderDeleteButton}
           />
         </Table>
         <View

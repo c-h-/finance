@@ -96,6 +96,18 @@ export function editTransaction(rowId, col, edit) {
 }
 
 /**
+ * Delete a transaction
+ */
+export function removeTransaction(id) {
+  return {
+    type: ActionTypes.REMOVE_TRANSACTION,
+    payload: {
+      id,
+    },
+  };
+}
+
+/**
  * Switch between perf tabs
  */
 export function switchTabs(portfolioID) {

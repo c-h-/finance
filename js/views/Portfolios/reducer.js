@@ -165,6 +165,17 @@ export default function portfolios(state = initState, action) {
         transactions: updatedTrans,
       };
     }
+    case ActionTypes.REMOVE_TRANSACTION: {
+      if (!action.payload || typeof action.payload.id !== 'number') {
+        return state;
+      }
+      return {
+        ...state,
+        transactions: state.transactions.filter((trans) => {
+          return trans[transStructure.ID] !== action.payload.id;
+        }),
+      };
+    }
     default:
       return state;
   }

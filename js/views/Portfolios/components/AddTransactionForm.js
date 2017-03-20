@@ -133,7 +133,7 @@ class AddTransactionForm extends Component {
         >
           {assetDefs.map((asset) => {
             return (
-              <option value={asset.enum} key={asset.enum}>
+              <option value={asset.enum} key={asset.name}>
                 {asset.name}
               </option>
             );
@@ -163,7 +163,7 @@ class AddTransactionForm extends Component {
           {
             selectedAssetType.t_types.map((transType) => {
               return (
-                <option value={transType.enum}>
+                <option value={transType.enum} key={transType.name}>
                   {transType.name}
                 </option>
               );
@@ -200,7 +200,7 @@ class AddTransactionForm extends Component {
         <TextInput
           style={styles.TextInput}
           value={amount || ''}
-          keyboardType="numbeic"
+          keyboardType="numeric"
           onChange={this.handleChange('amount')}
         />
 
