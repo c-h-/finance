@@ -14,14 +14,31 @@ const Hello = () => {
       <View className="pt-card pt-elevation-2">
         <h2>Hello!</h2>
         <Text style={styles.Text}>
-          I built Simple Portfolio Tracker to show me divers asset values in one simple place.
+          When I was looking around for a tool that would help me keep track of diverse
+          portfolios it was hard to find a good, free solution that I could trust. For that
+          need I built this tool.
         </Text>
+        <Text style={styles.Text} />
+
+        <h3><Icon name="view-list" /> Portfolios and Transactions</h3>
+        <Text style={styles.Text}>You can keep track of Cash assets (and debts), equity stocks,
+          ETFs, Bitcoin, and Ethereum with Peace Tools. Simply create a portfolio and add your
+          transactions. Then use the Performance tab to analyze the portfolio over time.</Text>
+        <Text style={styles.Text} />
+
+        <h3><Icon name="timeline" /> Performance Comparisons and Charts</h3>
+        <Text style={styles.Text}>Charts are the heart of this app. In the Performance tab you
+          can mix and match portfolios you&lsquo;ve saved with each other and with symbols on the
+          market. Set whatever time range you&lsquo;re looking for. Choose between sum and compare
+          modes. Sum mode sums the values you&lsquo;re analyzing, which is useful for meta-analysis
+          of your portfolios overall. Compare mode plots values side by side, useful for looking at
+          stocks and similar portfolios.</Text>
         <Text style={styles.Text} />
 
         <h3><Icon name="lock" /> Private, Secure, and Open-Source</h3>
         <Text style={styles.Text}>Your finances are your business only. This app never sends your
-          financial data anywhere. Keep in mind this means that if you clear your browser, your data
-          is gone irrecoverably. Export and back up regularly.
+          financial data anywhere. Keep in mind this means that if you clear your browser storage
+          then your data is gone irrecoverably. Export to Excel and back up regularly.
         </Text>
         <Text style={styles.Text}>The only data sent to servers from the app is anonymous usage data
           to help with planning features and gauging usage, as well as anonymous data about any
@@ -36,31 +53,12 @@ const Hello = () => {
         </Text>
         <Text style={styles.Text} />
 
-        <h3><Icon name="view-list" /> Portfolios and Transactions</h3>
-        <Text style={styles.Text}>You can also create portfolios with transactions.</Text>
-        <Text style={styles.Text}>With transactions you can represent stock
-          share purchases or sales.</Text>
-        <Text style={styles.Text}>You can also model USD cash assets or
-          liabilities with transactions.</Text>
-        <Text style={styles.Text}>Lastly, you can model Bitcoin and Ethereum
-          holdings in USD with transactions.</Text>
-        <Text style={styles.Text} />
-
-        <h3><Icon name="timeline" /> Performance Comparisons and Charts</h3>
-        <Text style={styles.Text}>Charts are the heart of this simple app. Mix and
-          match your portfolios to see their values change. Cash assets go up and
-          down according to transactions. See the USD market value of your holdings
-          in stock and cryptocurrency holdings.</Text>
-        <Text style={styles.Text}>Use the Comparison mode to see assets side by side, or summing
-          mode to easily see the sum of chosen assets.</Text>
-        <Text style={styles.Text}>You can look up historical data for any stocks, as well as the
-            Bitcoin and Ethereum to US Dollar exchange rate, all alongside portfolios.</Text>
-        <Text style={styles.Text}>Easily switch between charts by creating Comparison tabs.</Text>
-        <Text style={styles.Text} />
-
         <h3><Icon name="settings" /> Settings</h3>
         <Text style={styles.Text}>Data is pulled from the excellent meta-database Quandl. You will
-            need a proper Quandl API key to pull new data in the Settings page.</Text>
+            need a proper Quandl API key to pull new data in the Settings page. Without a Quandl API
+            key the app will attempt to fall back to other less solid APIs.</Text>
+        <Text style={styles.Text}>Adding a Bing Search API Key allows you to see news headlines for
+          selected assets in the Performance tab.</Text>
         <Text style={styles.Text} />
 
         <h3><Icon name="touch-app" /> Caching and Responsiveness</h3>

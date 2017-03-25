@@ -79,9 +79,13 @@ export default function buildAPIRequest(dates, symbol, quandl) {
   const firstDate = formatDate(new Date(dates[0]));
   const secondDate = formatDate(new Date(dates[1]));
   if (
-    symbolParts.type === symbolTypes.STOCK // allows equities to be entered
-    || symbolParts.type === symbolTypes.CURRENCY // Allows user input BTCUSD=X or BTC=X for bitcoin
-    || symbolParts.type === symbolTypes.USER_INPUT // Allows user input ETH/BTC for ethereum/bitcoin
+    (
+      symbolParts.type === symbolTypes.STOCK // allows equities to be entered
+      || symbolParts.type === symbolTypes.CURRENCY // Allows input BTCUSD=X or BTC=X for bitcoin
+      || symbolParts.type === symbolTypes.USER_INPUT // Allows input ETH/BTC ethereum/bitcoin
+    )
+    && typeof quandl === 'string' // make sure we have a decent API key
+    && quandl.length > 2
   ) {
     const start = 'https://www.quandl.com/api/v3/datasets/'
       + `${getDatabaseCode(symbolParts)}/${getDatasetCode(symbolParts)}.json`;
