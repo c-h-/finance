@@ -4,6 +4,7 @@ import {
   Text,
 } from 'react-native';
 
+import Link from '../../components/Link';
 import Icon from '../../components/Icon';
 
 import styles from './styles';
@@ -74,6 +75,11 @@ const Hello = () => {
           Bing APIs). See the settings page to configure API keys. Other APIs supplement the
           coverage that Quandl and Bing provide.
         </Text>
+        <Link
+          href="https://www.netlify.com"
+        >
+          <img src="https://www.netlify.com/img/global/badges/netlify-light.svg" />
+        </Link>
       </View>
     </View>
   );
